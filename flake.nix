@@ -100,5 +100,10 @@
           };
         };
       };
+
+      flake.templates.default = {
+        path = ./.;
+        description = "Reproducible Svelte app with Effect integration";
+      };
     };
 }

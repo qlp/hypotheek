@@ -2,6 +2,13 @@
 
 This is a Nix-powered [Svelte](https://svelte.dev) template with [Effect](https://effect.website) integration. It builds an app fully reproducibly, including tests.
 
+To quickly get started with this template, run:
+
+```bash
+nix flake init -t github:cor/svelte-effect-nix-template
+```
+
+
 ## Building and Running
 
 ### Building the App
