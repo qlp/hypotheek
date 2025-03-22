@@ -33,10 +33,21 @@
         };
         
         apps = {
+          dev = {
+            type = "app";
+            program = pkgs.writeShellApplication {
+              name = "app-dev-server";
+              runtimeInputs = [ pkgs.nodejs ];
+              text = ''
+                npm install
+                npm run dev
+              '';
+            };
+          };
           preview = {
             type = "app";
             program = pkgs.writeShellApplication {
-              name = "serve-svelte-app";
+              name = "preview-app";
               runtimeInputs = [ pkgs.miniserve ];
               text = ''
                 miniserve --spa --index index.html --port 8080 ${self'.packages.app}
@@ -45,6 +56,20 @@
           };
           default = self'.apps.preview;
         };
+
+        devShells.default = pkgs.mkShell {
+          name = "app-devshell";
+          buildInputs = with pkgs; [
+            nodejs
+            nodePackages_latest.nodejs
+            nodePackages_latest.graphqurl
+            nodePackages_latest.svelte-language-server
+            nodePackages_latest."@tailwindcss/language-server"
+            nodePackages_latest.typescript-language-server
+            nodePackages_latest.vscode-langservers-extracted
+          ];
+        };
+        
       };
     };
 }
