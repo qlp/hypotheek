@@ -31,6 +31,20 @@
           };
           default = self'.packages.app;
         };
+        
+        apps = {
+          preview = {
+            type = "app";
+            program = pkgs.writeShellApplication {
+              name = "serve-svelte-app";
+              runtimeInputs = [ pkgs.miniserve ];
+              text = ''
+                miniserve --spa --index index.html --port 8080 ${self'.packages.app}
+              '';
+            };
+          };
+          default = self'.apps.preview;
+        };
       };
     };
 }
