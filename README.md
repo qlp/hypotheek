@@ -71,4 +71,7 @@ Format all code in the project with:
 nix fmt
 ```
 
-This uses Prettier to format TypeScript, JavaScript, JSON, Markdown, Svelte, HTML, and CSS files according to the project's configuration in `.prettierrc`.
+This uses:
+
+- Prettier to format TypeScript, JavaScript, JSON, Markdown, Svelte, HTML, and CSS files according to the project's configuration in `.prettierrc`
+- nixpkgs-fmt to format Nix files

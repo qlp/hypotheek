@@ -13,29 +13,31 @@
       imports = [
         treefmt-nix.flakeModule
       ];
-      
+
       perSystem = { config, self', inputs', pkgs, lib, system, ... }: {
-        packages = let
-          packageJSON = lib.importJSON ./package.json;
-        in {
-          app = pkgs.buildNpmPackage {
-            npmDepsHash = "sha256-27tdB41x6kexeQ44wMwGlxpvLS9E7xxaDP99lZcqFfo=";
-            src = ./.;
-            pname = packageJSON.name;
-            inherit (packageJSON) version;
-            installPhase = ''
-              mkdir -p $out
-              cp -r ./build/* $out
-            '';
-            doCheck = true;
-            checkPhase = ''
-              npm run test
-            '';
-            doDist = false;
+        packages =
+          let
+            packageJSON = lib.importJSON ./package.json;
+          in
+          {
+            app = pkgs.buildNpmPackage {
+              npmDepsHash = "sha256-27tdB41x6kexeQ44wMwGlxpvLS9E7xxaDP99lZcqFfo=";
+              src = ./.;
+              pname = packageJSON.name;
+              inherit (packageJSON) version;
+              installPhase = ''
+                mkdir -p $out
+                cp -r ./build/* $out
+              '';
+              doCheck = true;
+              checkPhase = ''
+                npm run test
+              '';
+              doDist = false;
+            };
+            default = self'.packages.app;
           };
-          default = self'.packages.app;
-        };
-        
+
         apps = {
           dev = {
             type = "app";
@@ -74,7 +76,7 @@
             config.treefmt.build.wrapper
           ];
         };
-        
+
         treefmt = {
           projectRootFile = "flake.nix";
           programs = {
@@ -91,9 +93,12 @@
                 "*.css"
               ];
             };
+            nixpkgs-fmt = {
+              enable = true;
+              includes = [ "*.nix" ];
+            };
           };
         };
-        
       };
     };
 }
