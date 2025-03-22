@@ -5,7 +5,10 @@ This is a Nix-powered [Svelte](https://svelte.dev) template with [Effect](https:
 To quickly get started with this template, run:
 
 ```bash
+mkdir project
+cd project
 nix flake init -t github:cor/svelte-effect-nix-template
+git init
 ```
 
 
