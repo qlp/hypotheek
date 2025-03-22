@@ -13,6 +13,7 @@ nix build
 ```
 
 This will:
+
 1. Install all dependencies
 2. Run the tests using Vitest
 3. Build the application
@@ -27,6 +28,7 @@ nix run
 ```
 
 This will:
+
 1. Build the app if it hasn't been built already
 2. Start a local server using miniserve
 3. Serve the app on http://localhost:8080
@@ -54,8 +56,19 @@ nix develop
 ```
 
 This provides:
+
 - Node.js and npm
 - TypeScript language server
 - Svelte language server
 - Tailwind CSS language server
 - Other development tools
+
+### Formatting Code
+
+Format all code in the project with:
+
+```bash
+nix fmt
+```
+
+This uses Prettier to format TypeScript, JavaScript, JSON, Markdown, Svelte, HTML, and CSS files according to the project's configuration in `.prettierrc`.

@@ -4,11 +4,15 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
+  outputs = inputs@{ self, nixpkgs, flake-parts, treefmt-nix, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      imports = [
+        treefmt-nix.flakeModule
+      ];
       
       perSystem = { config, self', inputs', pkgs, lib, system, ... }: {
         packages = let
@@ -67,7 +71,27 @@
             nodePackages_latest."@tailwindcss/language-server"
             nodePackages_latest.typescript-language-server
             nodePackages_latest.vscode-langservers-extracted
+            config.treefmt.build.wrapper
           ];
+        };
+        
+        treefmt = {
+          projectRootFile = "flake.nix";
+          programs = {
+            prettier = {
+              enable = true;
+              package = pkgs.nodePackages.prettier;
+              includes = [
+                "*.ts"
+                "*.js"
+                "*.json"
+                "*.md"
+                "*.svelte"
+                "*.html"
+                "*.css"
+              ];
+            };
+          };
         };
         
       };
