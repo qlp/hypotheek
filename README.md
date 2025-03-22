@@ -33,3 +33,29 @@ This will:
 
 The preview server uses SPA mode, so client-side routing will work correctly.
 
+## Development
+
+### Development Server
+
+To start the development server with hot reloading:
+
+```bash
+nix run .#dev
+```
+
+This will install dependencies and start the Svelte development server.
+
+### Development Shell
+
+To enter a development shell with all necessary tools:
+
+```bash
+nix develop
+```
+
+This provides:
+- Node.js and npm
+- TypeScript language server
+- Svelte language server
+- Tailwind CSS language server
+- Other development tools
