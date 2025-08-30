@@ -3,11 +3,12 @@
 	import { calculateMortgage, formatEuro, type MortgageInputs, type MortgageResult } from '$lib';
 	import MortgageChart from '$lib/MortgageChart.svelte';
 	import MortgageDataTable from '$lib/MortgageDataTable.svelte';
+	import { dutch, english } from '$lib/i18n';
 	import { onMount } from 'svelte';
 
 	let inputs: MortgageInputs = {
-		lening: 670000,
-		rente: 4.32,
+		lening: 500000,
+		rente: 5.0,
 		looptijdJaren: 30,
 		inflatie: 2,
 		hraJaren: 10,
@@ -19,6 +20,10 @@
 	let result: MortgageResult | null = null;
 	let calculating = false;
 	let showCalculating = false;
+	let language: 'nl' | 'en' = 'nl';
+
+	$: t = language === 'nl' ? dutch : english;
+	$: locale = language === 'nl' ? 'nl-NL' : 'en-US';
 
 	function updateSliderBackground(element: HTMLInputElement) {
 		const min = parseFloat(element.min);
@@ -71,16 +76,36 @@
 </script>
 
 <div class="max-w-4xl mx-auto p-6 space-y-6">
-	<h1 class="text-3xl font-bold text-gray-900">Hypotheek Calculator</h1>
+	<div class="flex justify-between items-center">
+		<h1 class="text-3xl font-bold text-gray-900">{t.title}</h1>
+		<div class="flex space-x-2">
+			<button
+				onclick={() => (language = 'nl')}
+				class="px-3 py-1 text-sm rounded {language === 'nl'
+					? 'bg-blue-600 text-white'
+					: 'bg-gray-200 text-gray-700'}"
+			>
+				NL
+			</button>
+			<button
+				onclick={() => (language = 'en')}
+				class="px-3 py-1 text-sm rounded {language === 'en'
+					? 'bg-blue-600 text-white'
+					: 'bg-gray-200 text-gray-700'}"
+			>
+				EN
+			</button>
+		</div>
+	</div>
 
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 		<div class="space-y-4">
-			<h2 class="text-xl font-semibold text-gray-800">Parameters</h2>
+			<h2 class="text-xl font-semibold text-gray-800">{t.parameters}</h2>
 
 			<div class="space-y-3">
 				<div>
 					<label for="lening" class="block text-sm font-medium text-gray-700 mb-1"
-						>Lening bedrag (€)</label
+						>{t.loanAmount}</label
 					>
 					<div class="space-y-2">
 						<input
@@ -103,7 +128,9 @@
 				</div>
 
 				<div>
-					<label for="rente" class="block text-sm font-medium text-gray-700 mb-1">Rente (%)</label>
+					<label for="rente" class="block text-sm font-medium text-gray-700 mb-1"
+						>{t.interestRate}</label
+					>
 					<div class="space-y-2">
 						<input
 							id="rente"
@@ -127,7 +154,7 @@
 
 				<div>
 					<label for="looptijd" class="block text-sm font-medium text-gray-700 mb-1"
-						>Looptijd (jaren)</label
+						>{t.duration}</label
 					>
 					<div class="space-y-2">
 						<input
@@ -151,7 +178,7 @@
 
 				<div>
 					<label for="inflatie" class="block text-sm font-medium text-gray-700 mb-1"
-						>Inflatie (%)</label
+						>{t.inflation}</label
 					>
 					<div class="space-y-2">
 						<input
@@ -175,9 +202,19 @@
 				</div>
 
 				<div>
-					<label for="hra" class="block text-sm font-medium text-gray-700 mb-1">
-						{inputs.hraLinearAfbouw ? 'HRA afbouw periode (jaren)' : 'HRA jaren'}
-					</label>
+					<div class="flex items-center space-x-2 mb-1">
+						<label for="hra" class="block text-sm font-medium text-gray-700">
+							{inputs.hraLinearAfbouw ? t.hraReductionPeriodLabel : t.hraYearsLabel}
+						</label>
+						<div class="group relative">
+							<span class="text-gray-400 cursor-help">ℹ️</span>
+							<div
+								class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10"
+							>
+								{t.hraTooltip}
+							</div>
+						</div>
+					</div>
 					<div class="space-y-2">
 						<input
 							id="hra"
@@ -199,9 +236,19 @@
 				</div>
 
 				<div>
-					<label for="belasting" class="block text-sm font-medium text-gray-700 mb-1">
-						{inputs.hraLinearAfbouw ? 'HRA start percentage (%)' : 'Belastingtarief (%)'}
-					</label>
+					<div class="flex items-center space-x-2 mb-1">
+						<label for="belasting" class="block text-sm font-medium text-gray-700">
+							{inputs.hraLinearAfbouw ? t.hraStartPercentageLabel : t.taxRateLabel}
+						</label>
+						<div class="group relative">
+							<span class="text-gray-400 cursor-help">ℹ️</span>
+							<div
+								class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10"
+							>
+								{t.hraTooltip}
+							</div>
+						</div>
+					</div>
 					<div class="space-y-2">
 						<input
 							id="belasting"
@@ -231,15 +278,25 @@
 							onchange={calculate}
 							class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
 						/>
-						<span class="text-sm font-medium text-gray-700">HRA lineair afbouwen</span>
+						<span class="text-sm font-medium text-gray-700">{t.hraLinearReduction}</span>
 					</label>
 				</div>
 
 				{#if inputs.hraLinearAfbouw}
 					<div>
-						<label for="hraEind" class="block text-sm font-medium text-gray-700 mb-1">
-							HRA eind percentage (%)
-						</label>
+						<div class="flex items-center space-x-2 mb-1">
+							<label for="hraEind" class="block text-sm font-medium text-gray-700">
+								{t.hraEndPercentage}
+							</label>
+							<div class="group relative">
+								<span class="text-gray-400 cursor-help">ℹ️</span>
+								<div
+									class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10"
+								>
+									{t.hraTooltip}
+								</div>
+							</div>
+						</div>
 						<div class="space-y-2">
 							<input
 								id="hraEind"
@@ -265,10 +322,10 @@
 		</div>
 
 		<div class="space-y-4">
-			<h2 class="text-xl font-semibold text-gray-800">Resultaat</h2>
+			<h2 class="text-xl font-semibold text-gray-800">{t.results}</h2>
 
 			{#if showCalculating}
-				<div class="text-blue-600">Berekenen...</div>
+				<div class="text-blue-600">{t.calculating}</div>
 			{:else if result}
 				<div class="overflow-x-auto">
 					<table class="w-full bg-white border border-gray-200 rounded-lg">
@@ -276,45 +333,50 @@
 							<tr>
 								<th
 									class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-									>Metric</th
+									>{t.metric}</th
 								>
 								<th
 									class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-									>Nominaal</th
+									>{t.nominal}</th
 								>
 								<th
 									class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-									>Reëel</th
+									>{t.real}</th
 								>
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-gray-200">
 							<tr>
-								<td class="px-4 py-3 text-sm font-medium text-gray-900">Maandlast</td>
-								<td class="px-4 py-3 text-sm text-right">{formatEuro(result.annuiteit)}</td>
-								<td class="px-4 py-3 text-sm text-right">{formatEuro(result.annuiteitReel)}</td>
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">{t.monthlyPayment}</td>
+								<td class="px-4 py-3 text-sm text-right">{formatEuro(result.annuiteit, locale)}</td>
+								<td class="px-4 py-3 text-sm text-right"
+									>{formatEuro(result.annuiteitReel, locale)}</td
+								>
 							</tr>
 							<tr>
-								<td class="px-4 py-3 text-sm font-medium text-gray-900">Totaal betaald</td>
-								<td class="px-4 py-3 text-sm text-right">{formatEuro(result.totaalNominaal)}</td>
-								<td class="px-4 py-3 text-sm text-right">{formatEuro(result.totaalReel)}</td>
-							</tr>
-							<tr class="bg-red-50">
-								<td class="px-4 py-3 text-sm font-medium text-gray-900">Extra kosten totaal</td>
-								<td class="px-4 py-3 text-sm text-right text-red-600"
-									>{formatEuro(result.verschilNominaal)}</td
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">{t.totalPaid}</td>
+								<td class="px-4 py-3 text-sm text-right"
+									>{formatEuro(result.totaalNominaal, locale)}</td
 								>
-								<td class="px-4 py-3 text-sm text-right text-red-600"
-									>{formatEuro(result.verschilReel)}</td
+								<td class="px-4 py-3 text-sm text-right">{formatEuro(result.totaalReel, locale)}</td
 								>
 							</tr>
 							<tr class="bg-red-50">
-								<td class="px-4 py-3 text-sm font-medium text-gray-900">Extra kosten per maand</td>
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">{t.extraCostsTotal}</td>
 								<td class="px-4 py-3 text-sm text-right text-red-600"
-									>{formatEuro(result.verschilNominaalPerMaand)}</td
+									>{formatEuro(result.verschilNominaal, locale)}</td
 								>
 								<td class="px-4 py-3 text-sm text-right text-red-600"
-									>{formatEuro(result.verschilReelPerMaand)}</td
+									>{formatEuro(result.verschilReel, locale)}</td
+								>
+							</tr>
+							<tr class="bg-red-50">
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">{t.extraCostsMonthly}</td>
+								<td class="px-4 py-3 text-sm text-right text-red-600"
+									>{formatEuro(result.verschilNominaalPerMaand, locale)}</td
+								>
+								<td class="px-4 py-3 text-sm text-right text-red-600"
+									>{formatEuro(result.verschilReelPerMaand, locale)}</td
 								>
 							</tr>
 						</tbody>
@@ -326,25 +388,25 @@
 
 	{#if result}
 		<div class="space-y-6">
-			<h2 class="text-2xl font-semibold text-gray-800">Maandelijkse kosten over tijd</h2>
+			<h2 class="text-2xl font-semibold text-gray-800">{t.monthlyCostsOverTime}</h2>
 
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<MortgageChart data={result.monthlyData} title="Nominale bedragen" isReal={false} />
 				<MortgageChart
 					data={result.monthlyData}
-					title="Reële bedragen (inflatie-gecorrigeerd)"
-					isReal={true}
+					title={t.nominalAmounts}
+					isReal={false}
+					{t}
+					{locale}
 				/>
+				<MortgageChart data={result.monthlyData} title={t.realAmounts} isReal={true} {t} {locale} />
 			</div>
 
-			<MortgageDataTable data={result.monthlyData} />
+			<MortgageDataTable data={result.monthlyData} {t} {locale} />
 		</div>
 	{/if}
 
 	<div class="text-xs text-gray-500 mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-		<strong>DISCLAIMER:</strong> Dit is geen financieel advies. Deze berekening is uitsluitend bedoeld
-		voor educatieve en informatieve doeleinden. De resultaten zijn hypothetisch en de nauwkeurigheid
-		wordt niet gegarandeerd. Raadpleeg altijd een financieel adviseur of hypotheekspecialist voor persoonlijk
-		advies. De maker neemt geen verantwoordelijkheid voor beslissingen gebaseerd op deze tool.
+		<strong>DISCLAIMER:</strong>
+		{t.disclaimer}
 	</div>
 </div>

@@ -38,20 +38,17 @@ function normalizeRate(x: number): number {
 	return x / 100.0;
 }
 
-function formatEuro(bedrag: number): string {
-	const afgerond = Math.round(bedrag);
-	const s = Math.abs(afgerond).toString();
+export function formatEuro(bedrag: number, locale: string = 'nl-NL'): string {
+	return new Intl.NumberFormat(locale, {
+		style: 'currency',
+		currency: 'EUR',
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0
+	}).format(bedrag);
+}
 
-	let withSep = '';
-	for (let i = 0; i < s.length; i++) {
-		if (i > 0 && (s.length - i) % 3 === 0) {
-			withSep += '.';
-		}
-		withSep += s[i];
-	}
-
-	const sign = bedrag < 0 ? '-' : '';
-	return `${sign}€${withSep}`;
+export function formatPercentage(percentage: number): string {
+	return percentage.toFixed(1) + '%';
 }
 
 export const calculateMortgage = (
@@ -148,5 +145,3 @@ export const calculateMortgage = (
 			monthlyData
 		};
 	});
-
-export { formatEuro };
