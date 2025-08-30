@@ -14,9 +14,18 @@
 
 	let result: MortgageResult | null = null;
 	let calculating = false;
+	let showCalculating = false;
 
 	function calculate() {
 		calculating = true;
+		showCalculating = false;
+
+		// Toon "Berekenen..." alleen na 200ms
+		const timer = setTimeout(() => {
+			if (calculating) {
+				showCalculating = true;
+			}
+		}, 200);
 
 		const program = Effect.gen(function* () {
 			yield* Effect.sleep('50 millis');
@@ -24,8 +33,10 @@
 		});
 
 		Effect.runPromise(program).then((res) => {
+			clearTimeout(timer);
 			result = res;
 			calculating = false;
+			showCalculating = false;
 		});
 	}
 
@@ -46,77 +57,143 @@
 					<label for="lening" class="block text-sm font-medium text-gray-700 mb-1"
 						>Lening bedrag (€)</label
 					>
-					<input
-						id="lening"
-						bind:value={inputs.lening}
-						type="number"
-						class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-						oninput={calculate}
-					/>
+					<div class="space-y-2">
+						<input
+							id="lening"
+							bind:value={inputs.lening}
+							type="number"
+							class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							oninput={calculate}
+						/>
+						<input
+							bind:value={inputs.lening}
+							type="range"
+							min="100000"
+							max="1500000"
+							step="10000"
+							class="w-full"
+							oninput={calculate}
+						/>
+					</div>
 				</div>
 
 				<div>
 					<label for="rente" class="block text-sm font-medium text-gray-700 mb-1">Rente (%)</label>
-					<input
-						id="rente"
-						bind:value={inputs.rente}
-						type="number"
-						step="0.01"
-						class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-						oninput={calculate}
-					/>
+					<div class="space-y-2">
+						<input
+							id="rente"
+							bind:value={inputs.rente}
+							type="number"
+							step="0.01"
+							class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							oninput={calculate}
+						/>
+						<input
+							bind:value={inputs.rente}
+							type="range"
+							min="1"
+							max="10"
+							step="0.1"
+							class="w-full"
+							oninput={calculate}
+						/>
+					</div>
 				</div>
 
 				<div>
 					<label for="looptijd" class="block text-sm font-medium text-gray-700 mb-1"
 						>Looptijd (jaren)</label
 					>
-					<input
-						id="looptijd"
-						bind:value={inputs.looptijdJaren}
-						type="number"
-						class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-						oninput={calculate}
-					/>
+					<div class="space-y-2">
+						<input
+							id="looptijd"
+							bind:value={inputs.looptijdJaren}
+							type="number"
+							class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							oninput={calculate}
+						/>
+						<input
+							bind:value={inputs.looptijdJaren}
+							type="range"
+							min="5"
+							max="40"
+							step="1"
+							class="w-full"
+							oninput={calculate}
+						/>
+					</div>
 				</div>
 
 				<div>
 					<label for="inflatie" class="block text-sm font-medium text-gray-700 mb-1"
 						>Inflatie (%)</label
 					>
-					<input
-						id="inflatie"
-						bind:value={inputs.inflatie}
-						type="number"
-						step="0.01"
-						class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-						oninput={calculate}
-					/>
+					<div class="space-y-2">
+						<input
+							id="inflatie"
+							bind:value={inputs.inflatie}
+							type="number"
+							step="0.01"
+							class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							oninput={calculate}
+						/>
+						<input
+							bind:value={inputs.inflatie}
+							type="range"
+							min="0"
+							max="8"
+							step="0.1"
+							class="w-full"
+							oninput={calculate}
+						/>
+					</div>
 				</div>
 
 				<div>
 					<label for="hra" class="block text-sm font-medium text-gray-700 mb-1">HRA jaren</label>
-					<input
-						id="hra"
-						bind:value={inputs.hraJaren}
-						type="number"
-						class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-						oninput={calculate}
-					/>
+					<div class="space-y-2">
+						<input
+							id="hra"
+							bind:value={inputs.hraJaren}
+							type="number"
+							class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							oninput={calculate}
+						/>
+						<input
+							bind:value={inputs.hraJaren}
+							type="range"
+							min="0"
+							max="30"
+							step="1"
+							class="w-full"
+							oninput={calculate}
+						/>
+					</div>
 				</div>
 
 				<div>
 					<label for="belasting" class="block text-sm font-medium text-gray-700 mb-1"
 						>Belastingtarief (%)</label
 					>
-					<input
-						id="belasting"
-						bind:value={inputs.belastingtarief}
-						type="number"
-						step="0.01"
-						class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-						oninput={calculate}
-					/>
+					<div class="space-y-2">
+						<input
+							id="belasting"
+							bind:value={inputs.belastingtarief}
+							type="number"
+							step="0.01"
+							class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							oninput={calculate}
+						/>
+						<input
+							bind:value={inputs.belastingtarief}
+							type="range"
+							min="20"
+							max="55"
+							step="0.1"
+							class="w-full"
+							oninput={calculate}
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -124,7 +201,7 @@
 		<div class="space-y-4">
 			<h2 class="text-xl font-semibold text-gray-800">Resultaat</h2>
 
-			{#if calculating}
+			{#if showCalculating}
 				<div class="text-blue-600">Berekenen...</div>
 			{:else if result}
 				<div class="overflow-x-auto">
