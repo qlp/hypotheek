@@ -387,25 +387,25 @@
 									>{formatEuro(result.totaalReel, locale)}</td
 								>
 							</tr>
-							<tr class="bg-red-50 dark:bg-red-900/30">
+							<tr class="bg-amber-50 dark:bg-amber-900/20">
 								<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
 									>{t.extraCostsTotal}</td
 								>
-								<td class="px-4 py-3 text-sm text-right text-red-600"
+								<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
 									>{formatEuro(result.verschilNominaal, locale)}</td
 								>
-								<td class="px-4 py-3 text-sm text-right text-red-600"
+								<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
 									>{formatEuro(result.verschilReel, locale)}</td
 								>
 							</tr>
-							<tr class="bg-red-50 dark:bg-red-900/30">
+							<tr class="bg-amber-50 dark:bg-amber-900/20">
 								<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
 									>{t.extraCostsMonthly}</td
 								>
-								<td class="px-4 py-3 text-sm text-right text-red-600"
+								<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
 									>{formatEuro(result.verschilNominaalPerMaand, locale)}</td
 								>
-								<td class="px-4 py-3 text-sm text-right text-red-600"
+								<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
 									>{formatEuro(result.verschilReelPerMaand, locale)}</td
 								>
 							</tr>
