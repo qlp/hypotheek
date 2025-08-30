@@ -210,7 +210,7 @@
 						<td class="px-4 py-3 text-sm text-right text-green-600"
 							>{formatEuro(yearData.totals.hraVoordeel_reel, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right text-orange-600"
+						<td class="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400"
 							>{formatPercentage(yearData.totals.avgCumulatieveInflatie)}</td
 						>
 					</tr>
@@ -238,7 +238,7 @@
 								<td class="px-4 py-2 text-xs text-right text-green-600"
 									>{formatEuro(monthData.hraVoordeel_reel, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right text-orange-600"
+								<td class="px-4 py-2 text-xs text-right text-gray-600 dark:text-gray-400"
 									>{formatPercentage(monthData.cumulatieveInflatie)}</td
 								>
 							</tr>
