@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Effect } from 'effect';
 	import { calculateMortgage, formatEuro, type MortgageInputs, type MortgageResult } from '$lib';
+	import MortgageChart from '$lib/MortgageChart.svelte';
 	import { onMount } from 'svelte';
 
 	let inputs: MortgageInputs = {
@@ -257,6 +258,25 @@
 			{/if}
 		</div>
 	</div>
+
+	{#if result}
+		<div class="space-y-6">
+			<h2 class="text-2xl font-semibold text-gray-800">Maandelijkse kosten over tijd</h2>
+			
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+				<MortgageChart 
+					data={result.monthlyData} 
+					title="Nominale bedragen"
+					isReal={false}
+				/>
+				<MortgageChart 
+					data={result.monthlyData} 
+					title="Reële bedragen (inflatie-gecorrigeerd)"
+					isReal={true}
+				/>
+			</div>
+		</div>
+	{/if}
 
 	<div class="text-xs text-gray-500 mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
 		<strong>DISCLAIMER:</strong> Dit is geen financieel advies. Deze berekening is uitsluitend bedoeld

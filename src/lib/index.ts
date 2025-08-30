@@ -9,6 +9,16 @@ export interface MortgageInputs {
 	belastingtarief: number;
 }
 
+export interface MonthlyData {
+	maand: number;
+	aflossing: number;
+	renteNetto: number;
+	hraVoordeel: number;
+	aflossing_reel: number;
+	renteNetto_reel: number;
+	hraVoordeel_reel: number;
+}
+
 export interface MortgageResult {
 	annuiteit: number;
 	annuiteitReel: number;
@@ -18,6 +28,7 @@ export interface MortgageResult {
 	verschilReel: number;
 	verschilNominaalPerMaand: number;
 	verschilReelPerMaand: number;
+	monthlyData: MonthlyData[];
 }
 
 function normalizeRate(x: number): number {
@@ -56,20 +67,39 @@ export const calculateMortgage = (
 		let schuld = inputs.lening;
 		let totaalNominaal = 0.0;
 		let totaalReel = 0.0;
+		const monthlyData: MonthlyData[] = [];
 
 		for (let maand = 1; maand <= nMaanden; maand++) {
 			const renteBetaling = schuld * renteM;
 			const aflossing = annuiteit - renteBetaling;
 
 			let nettoBetaling = annuiteit;
+			let hraVoordeel = 0;
 			if (maand <= inputs.hraJaren * 12) {
-				const belastingVoordeel = renteBetaling * belastingtarief;
-				nettoBetaling -= belastingVoordeel;
+				hraVoordeel = renteBetaling * belastingtarief;
+				nettoBetaling -= hraVoordeel;
 			}
+
+			const renteNetto = renteBetaling - hraVoordeel;
 
 			const jaren = maand / 12.0;
 			const discountFactor = Math.pow(1.0 + inflatie, jaren);
 			const reelBetaling = nettoBetaling / discountFactor;
+
+			// Reële componenten
+			const aflossing_reel = aflossing / discountFactor;
+			const renteNetto_reel = renteNetto / discountFactor;
+			const hraVoordeel_reel = hraVoordeel / discountFactor;
+
+			monthlyData.push({
+				maand,
+				aflossing,
+				renteNetto,
+				hraVoordeel,
+				aflossing_reel,
+				renteNetto_reel,
+				hraVoordeel_reel
+			});
 
 			totaalNominaal += nettoBetaling;
 			totaalReel += reelBetaling;
@@ -95,7 +125,8 @@ export const calculateMortgage = (
 			verschilNominaal,
 			verschilReel,
 			verschilNominaalPerMaand,
-			verschilReelPerMaand
+			verschilReelPerMaand,
+			monthlyData
 		};
 	});
 
