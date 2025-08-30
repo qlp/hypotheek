@@ -12,9 +12,9 @@
 		rente: 5.0,
 		looptijdJaren: 30,
 		inflatie: 2,
-		hraJaren: 10,
+		hraJaren: 15,
 		belastingtarief: 37.48,
-		hraLinearAfbouw: false,
+		hraLinearAfbouw: true,
 		hraEindPercentage: 0
 	};
 
