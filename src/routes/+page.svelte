@@ -17,6 +17,21 @@
 	let calculating = false;
 	let showCalculating = false;
 
+	function updateSliderBackground(element: HTMLInputElement) {
+		const min = parseFloat(element.min);
+		const max = parseFloat(element.max);
+		const value = parseFloat(element.value);
+		const percentage = ((value - min) / (max - min)) * 100;
+		
+		element.style.background = `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`;
+	}
+
+	function handleSliderInput(event: Event) {
+		const target = event.target as HTMLInputElement;
+		updateSliderBackground(target);
+		calculate();
+	}
+
 	function calculate() {
 		calculating = true;
 		showCalculating = false;
@@ -43,6 +58,12 @@
 
 	onMount(() => {
 		calculate();
+		
+		// Initialize slider backgrounds
+		const sliders = document.querySelectorAll('input[type="range"]');
+		sliders.forEach(slider => {
+			updateSliderBackground(slider as HTMLInputElement);
+		});
 	});
 </script>
 
@@ -73,7 +94,7 @@
 							max="1500000"
 							step="10000"
 							class="w-full"
-							oninput={calculate}
+							oninput={handleSliderInput}
 						/>
 					</div>
 				</div>
@@ -96,7 +117,7 @@
 							max="10"
 							step="0.1"
 							class="w-full"
-							oninput={calculate}
+							oninput={handleSliderInput}
 						/>
 					</div>
 				</div>
@@ -120,7 +141,7 @@
 							max="40"
 							step="1"
 							class="w-full"
-							oninput={calculate}
+							oninput={handleSliderInput}
 						/>
 					</div>
 				</div>
@@ -145,7 +166,7 @@
 							max="8"
 							step="0.1"
 							class="w-full"
-							oninput={calculate}
+							oninput={handleSliderInput}
 						/>
 					</div>
 				</div>
@@ -167,7 +188,7 @@
 							max="30"
 							step="1"
 							class="w-full"
-							oninput={calculate}
+							oninput={handleSliderInput}
 						/>
 					</div>
 				</div>
@@ -192,7 +213,7 @@
 							max="55"
 							step="0.1"
 							class="w-full"
-							oninput={calculate}
+							oninput={handleSliderInput}
 						/>
 					</div>
 				</div>

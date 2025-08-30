@@ -25,6 +25,14 @@
 		chart.data.datasets[0].data = aflossing;
 		chart.data.datasets[1].data = renteNetto;
 		chart.data.datasets[2].data = hraVoordeel;
+		
+		// Update colors for Safari compatibility
+		chart.data.datasets[0].backgroundColor = 'rgba(59, 130, 246, 0.8)';
+		chart.data.datasets[0].borderColor = 'rgba(59, 130, 246, 1)';
+		chart.data.datasets[1].backgroundColor = 'rgba(239, 68, 68, 0.8)';
+		chart.data.datasets[1].borderColor = 'rgba(239, 68, 68, 1)';
+		chart.data.datasets[2].backgroundColor = 'rgba(34, 197, 94, 0.5)';
+		chart.data.datasets[2].borderColor = 'rgba(34, 197, 94, 0.8)';
 		chart.update();
 	}
 
@@ -50,20 +58,23 @@
 					{
 						label: 'Aflossing',
 						data: aflossing,
-						backgroundColor: 'rgb(59, 130, 246)',
-						borderWidth: 0
+						backgroundColor: 'rgba(59, 130, 246, 0.8)',
+						borderColor: 'rgba(59, 130, 246, 1)',
+						borderWidth: 1
 					},
 					{
 						label: 'Rente (netto)',
 						data: renteNetto,
-						backgroundColor: 'rgb(239, 68, 68)',
-						borderWidth: 0
+						backgroundColor: 'rgba(239, 68, 68, 0.8)',
+						borderColor: 'rgba(239, 68, 68, 1)',
+						borderWidth: 1
 					},
 					{
 						label: 'HRA voordeel',
 						data: hraVoordeel,
-						backgroundColor: 'rgb(34, 197, 94, 0.6)',
-						borderWidth: 0
+						backgroundColor: 'rgba(34, 197, 94, 0.5)',
+						borderColor: 'rgba(34, 197, 94, 0.8)',
+						borderWidth: 1
 					}
 				]
 			},
