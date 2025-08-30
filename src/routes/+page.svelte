@@ -101,8 +101,8 @@
 		</div>
 	</div>
 
-	<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-		<div class="space-y-4">
+	<div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+		<div class="space-y-4 lg:col-span-2">
 			<h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{t.parameters}</h2>
 
 			<div class="space-y-3">
@@ -338,7 +338,7 @@
 			</div>
 		</div>
 
-		<div class="space-y-4">
+		<div class="space-y-4 lg:col-span-3">
 			<h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{t.results}</h2>
 
 			{#if showCalculating}
@@ -412,29 +412,37 @@
 						</tbody>
 					</table>
 				</div>
+
+				{#if result}
+					<div class="space-y-6 mt-6">
+						<h3 class="text-lg font-semibold text-gray-800 dark:text-gray-300">
+							{t.monthlyCostsOverTime}
+						</h3>
+
+						<div class="grid grid-cols-1 gap-6">
+							<MortgageChart
+								data={result.monthlyData}
+								title={t.nominalAmounts}
+								isReal={false}
+								{t}
+								{locale}
+							/>
+							<MortgageChart
+								data={result.monthlyData}
+								title={t.realAmounts}
+								isReal={true}
+								{t}
+								{locale}
+							/>
+						</div>
+					</div>
+				{/if}
 			{/if}
 		</div>
 	</div>
 
 	{#if result}
-		<div class="space-y-6">
-			<h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-300">
-				{t.monthlyCostsOverTime}
-			</h2>
-
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<MortgageChart
-					data={result.monthlyData}
-					title={t.nominalAmounts}
-					isReal={false}
-					{t}
-					{locale}
-				/>
-				<MortgageChart data={result.monthlyData} title={t.realAmounts} isReal={true} {t} {locale} />
-			</div>
-
-			<MortgageDataTable data={result.monthlyData} {t} {locale} />
-		</div>
+		<MortgageDataTable data={result.monthlyData} {t} {locale} />
 	{/if}
 
 	<div
