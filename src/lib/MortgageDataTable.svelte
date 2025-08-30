@@ -132,46 +132,62 @@
 			<thead class="bg-gray-50 dark:bg-gray-700">
 				<tr>
 					<th
-						class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap"
+						rowspan="2"
+						class="px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap border-r border-gray-200 dark:border-gray-600 w-16"
 					>
 						{t.year}
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+						colspan="3"
+						class="px-4 py-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-600"
 					>
-						{t.repayment} (nom.)
+						{t.nominal}
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+						colspan="3"
+						class="px-4 py-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-600"
 					>
-						{t.netInterest} (nom.)
+						{t.real}
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-						title={t.hraTooltip}
-					>
-						{t.hraBenefit} (nom.)
-					</th>
-					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-					>
-						{t.repayment} (reëel)
-					</th>
-					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-					>
-						{t.netInterest} (reëel)
-					</th>
-					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-						title={t.hraTooltip}
-					>
-						{t.hraBenefit} (reëel)
-					</th>
-					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+						rowspan="2"
+						class="px-2 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-20"
 					>
 						{t.cumulativeInflation}
+					</th>
+				</tr>
+				<tr>
+					<th
+						class="px-2 py-2 text-right text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider"
+					>
+						{t.repayment}
+					</th>
+					<th
+						class="px-2 py-2 text-right text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wider"
+					>
+						{t.netInterest}
+					</th>
+					<th
+						class="px-2 py-2 text-right text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-600"
+						title={t.hraTooltip}
+					>
+						{t.hraBenefit}
+					</th>
+					<th
+						class="px-2 py-2 text-right text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider"
+					>
+						{t.repayment}
+					</th>
+					<th
+						class="px-2 py-2 text-right text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wider"
+					>
+						{t.netInterest}
+					</th>
+					<th
+						class="px-2 py-2 text-right text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-600"
+						title={t.hraTooltip}
+					>
+						{t.hraBenefit}
 					</th>
 				</tr>
 			</thead>
@@ -182,7 +198,7 @@
 						onclick={() => toggleYear(yearData.year)}
 					>
 						<td
-							class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap"
+							class="px-2 py-3 text-sm font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap border-r border-gray-200 dark:border-gray-600"
 						>
 							<div class="flex items-center">
 								<span class="mr-2 text-gray-400">
@@ -192,53 +208,59 @@
 								{yearData.year}
 							</div>
 						</td>
-						<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
+						<td class="px-4 py-3 text-sm text-right text-blue-600 dark:text-blue-400"
 							>{formatEuro(yearData.totals.aflossing, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
+						<td class="px-4 py-3 text-sm text-right text-red-600 dark:text-red-400"
 							>{formatEuro(yearData.totals.renteNetto, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right text-green-600"
+						<td
+							class="px-4 py-3 text-sm text-right text-green-600 dark:text-green-400 border-r border-gray-200 dark:border-gray-600"
 							>{formatEuro(yearData.totals.hraVoordeel, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
+						<td class="px-4 py-3 text-sm text-right text-blue-600 dark:text-blue-400"
 							>{formatEuro(yearData.totals.aflossing_reel, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
+						<td class="px-4 py-3 text-sm text-right text-red-600 dark:text-red-400"
 							>{formatEuro(yearData.totals.renteNetto_reel, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right text-green-600"
+						<td
+							class="px-4 py-3 text-sm text-right text-green-600 dark:text-green-400 border-r border-gray-200 dark:border-gray-600"
 							>{formatEuro(yearData.totals.hraVoordeel_reel, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400"
+						<td class="px-2 py-3 text-sm text-right text-gray-600 dark:text-gray-400"
 							>{formatPercentage(yearData.totals.avgCumulatieveInflatie)}</td
 						>
 					</tr>
 					{#if expandedYears.has(yearData.year)}
 						{#each yearData.months as monthData (monthData.maand)}
 							<tr class="bg-gray-25 dark:bg-gray-800/50">
-								<td class="px-8 py-2 text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
+								<td
+									class="px-2 py-2 text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap border-r border-gray-200 dark:border-gray-600"
+								>
 									{getMonthName(monthData.maand)} ({monthData.maand})
 								</td>
-								<td class="px-4 py-2 text-xs text-right text-gray-900 dark:text-gray-100"
+								<td class="px-4 py-2 text-xs text-right text-blue-600 dark:text-blue-400"
 									>{formatEuro(monthData.aflossing, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right text-gray-900 dark:text-gray-100"
+								<td class="px-4 py-2 text-xs text-right text-red-600 dark:text-red-400"
 									>{formatEuro(monthData.renteNetto, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right text-green-600"
+								<td
+									class="px-4 py-2 text-xs text-right text-green-600 dark:text-green-400 border-r border-gray-200 dark:border-gray-600"
 									>{formatEuro(monthData.hraVoordeel, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right text-gray-900 dark:text-gray-100"
+								<td class="px-4 py-2 text-xs text-right text-blue-600 dark:text-blue-400"
 									>{formatEuro(monthData.aflossing_reel, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right text-gray-900 dark:text-gray-100"
+								<td class="px-4 py-2 text-xs text-right text-red-600 dark:text-red-400"
 									>{formatEuro(monthData.renteNetto_reel, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right text-green-600"
+								<td
+									class="px-4 py-2 text-xs text-right text-green-600 dark:text-green-400 border-r border-gray-200 dark:border-gray-600"
 									>{formatEuro(monthData.hraVoordeel_reel, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right text-gray-600 dark:text-gray-400"
+								<td class="px-2 py-2 text-xs text-right text-gray-600 dark:text-gray-400"
 									>{formatPercentage(monthData.cumulatieveInflatie)}</td
 								>
 							</tr>
