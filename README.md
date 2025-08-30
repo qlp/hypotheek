@@ -11,7 +11,6 @@ nix flake init -t github:cor/svelte-effect-nix-template
 git init
 ```
 
-
 ## Building and Running
 
 ### Building the App

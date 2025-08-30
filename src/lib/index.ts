@@ -40,8 +40,10 @@ function formatEuro(bedrag: number): string {
 	return `${sign}€${withSep}`;
 }
 
-export const calculateMortgage = (inputs: MortgageInputs): Effect.Effect<MortgageResult, never, never> =>
-	Effect.gen(function* () {
+export const calculateMortgage = (
+	inputs: MortgageInputs
+): Effect.Effect<MortgageResult, never, never> =>
+	Effect.sync(() => {
 		const rente = normalizeRate(inputs.rente);
 		const inflatie = normalizeRate(inputs.inflatie);
 		const belastingtarief = normalizeRate(inputs.belastingtarief);
@@ -80,7 +82,7 @@ export const calculateMortgage = (inputs: MortgageInputs): Effect.Effect<Mortgag
 
 		// Bereken gemiddelde reële maandlast (in euro's van vandaag)
 		const annuiteitReel = totaalReel / nMaanden;
-		
+
 		// Bereken extra kosten per maand
 		const verschilNominaalPerMaand = verschilNominaal / nMaanden;
 		const verschilReelPerMaand = verschilReel / nMaanden;
