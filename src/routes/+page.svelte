@@ -2,6 +2,7 @@
 	import { Effect } from 'effect';
 	import { calculateMortgage, formatEuro, type MortgageInputs, type MortgageResult } from '$lib';
 	import MortgageChart from '$lib/MortgageChart.svelte';
+	import MortgageDataTable from '$lib/MortgageDataTable.svelte';
 	import { onMount } from 'svelte';
 
 	let inputs: MortgageInputs = {
@@ -292,6 +293,8 @@
 					isReal={true}
 				/>
 			</div>
+
+			<MortgageDataTable data={result.monthlyData} />
 		</div>
 	{/if}
 

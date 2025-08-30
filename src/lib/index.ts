@@ -17,6 +17,7 @@ export interface MonthlyData {
 	aflossing_reel: number;
 	renteNetto_reel: number;
 	hraVoordeel_reel: number;
+	cumulatieveInflatie: number;
 }
 
 export interface MortgageResult {
@@ -98,7 +99,8 @@ export const calculateMortgage = (
 				hraVoordeel,
 				aflossing_reel,
 				renteNetto_reel,
-				hraVoordeel_reel
+				hraVoordeel_reel,
+				cumulatieveInflatie: (discountFactor - 1) * 100
 			});
 
 			totaalNominaal += nettoBetaling;
