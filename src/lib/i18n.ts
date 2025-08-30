@@ -36,6 +36,10 @@ export interface Translations {
 	hraStartPercentageLabel: string;
 	month: string;
 	hraTooltip: string;
+	mortgageType: string;
+	annuity: string;
+	linear: string;
+	firstMonthlyPayment: string;
 }
 
 export const dutch: Translations = {
@@ -76,7 +80,11 @@ export const dutch: Translations = {
 	taxRateLabel: 'HRA percentage (%)',
 	hraStartPercentageLabel: 'HRA start percentage (%)',
 	month: 'maand',
-	hraTooltip: 'Hypotheekrenteaftrek: belastingvoordeel op hypotheekrente'
+	hraTooltip: 'Hypotheekrenteaftrek: belastingvoordeel op hypotheekrente',
+	mortgageType: 'Hypotheektype',
+	annuity: 'Annuïteit',
+	linear: 'Lineair',
+	firstMonthlyPayment: 'Eerste maandlast'
 };
 
 export const english: Translations = {
@@ -117,5 +125,9 @@ export const english: Translations = {
 	taxRateLabel: 'MID percentage (%)',
 	hraStartPercentageLabel: 'MID start percentage (%)',
 	month: 'month',
-	hraTooltip: 'Mortgage Interest Deduction: tax benefit on mortgage interest'
+	hraTooltip: 'Mortgage Interest Deduction: tax benefit on mortgage interest',
+	mortgageType: 'Mortgage type',
+	annuity: 'Annuity',
+	linear: 'Linear',
+	firstMonthlyPayment: 'First monthly payment'
 };

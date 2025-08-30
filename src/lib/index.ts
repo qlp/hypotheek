@@ -9,6 +9,7 @@ export interface MortgageInputs {
 	belastingtarief: number;
 	hraLinearAfbouw: boolean;
 	hraEindPercentage: number;
+	hypotheekType: 'annuiteit' | 'lineair';
 }
 
 export interface MonthlyData {
@@ -32,6 +33,7 @@ export interface MortgageResult {
 	verschilNominaalPerMaand: number;
 	verschilReelPerMaand: number;
 	monthlyData: MonthlyData[];
+	hypotheekType: 'annuiteit' | 'lineair';
 }
 
 function normalizeRate(x: number): number {
@@ -62,7 +64,11 @@ export const calculateMortgage = (
 		const nMaanden = inputs.looptijdJaren * 12;
 		const renteM = rente / 12.0;
 
-		const annuiteit = (inputs.lening * renteM) / (1.0 - Math.pow(1.0 + renteM, -nMaanden));
+		// For annuity: fixed monthly payment, for linear: fixed monthly principal repayment
+		const annuiteit = inputs.hypotheekType === 'annuiteit' 
+			? (inputs.lening * renteM) / (1.0 - Math.pow(1.0 + renteM, -nMaanden))
+			: 0;
+		const lineaireAflossing = inputs.hypotheekType === 'lineair' ? inputs.lening / nMaanden : 0;
 
 		let schuld = inputs.lening;
 		let totaalNominaal = 0.0;
@@ -71,9 +77,14 @@ export const calculateMortgage = (
 
 		for (let maand = 1; maand <= nMaanden; maand++) {
 			const renteBetaling = schuld * renteM;
-			const aflossing = annuiteit - renteBetaling;
+			const aflossing = inputs.hypotheekType === 'annuiteit' 
+				? annuiteit - renteBetaling 
+				: lineaireAflossing;
+			const maandlast = inputs.hypotheekType === 'annuiteit' 
+				? annuiteit 
+				: aflossing + renteBetaling;
 
-			let nettoBetaling = annuiteit;
+			let nettoBetaling = maandlast;
 			let hraVoordeel = 0;
 
 			if (inputs.hraLinearAfbouw) {
@@ -134,7 +145,7 @@ export const calculateMortgage = (
 		const verschilReelPerMaand = verschilReel / nMaanden;
 
 		return {
-			annuiteit,
+			annuiteit: inputs.hypotheekType === 'annuiteit' ? annuiteit : monthlyData[0]?.aflossing + monthlyData[0]?.renteNetto + monthlyData[0]?.hraVoordeel || 0,
 			annuiteitReel,
 			totaalNominaal,
 			totaalReel,
@@ -142,6 +153,7 @@ export const calculateMortgage = (
 			verschilReel,
 			verschilNominaalPerMaand,
 			verschilReelPerMaand,
-			monthlyData
+			monthlyData,
+			hypotheekType: inputs.hypotheekType
 		};
 	});
