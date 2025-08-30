@@ -1,15 +1,15 @@
-# Svelte Effect Nix Template
+# Hypotheek Calculator
 
-This is a Nix-powered [Svelte](https://svelte.dev) template with [Effect](https://effect.website) integration. It builds an app fully reproducibly, including tests.
+A comprehensive Dutch mortgage calculator built with [Svelte 5](https://svelte.dev) and [Effect](https://effect.website). Features interactive sliders, real-time calculations, inflation-corrected values, and detailed visualizations.
 
-To quickly get started with this template, run:
+## Features
 
-```bash
-mkdir project
-cd project
-nix flake init -t github:cor/svelte-effect-nix-template
-git init
-```
+- **Interactive mortgage calculations** with HRA (hypotheekrenteaftrek) tax benefits
+- **Real-time updates** with sliders and text inputs
+- **Inflation correction** showing both nominal and real values
+- **Interactive charts** displaying monthly costs over time
+- **Detailed data table** with expandable yearly/monthly breakdowns
+- **Cross-browser compatible** styling for consistent experience
 
 ## Building and Running
 

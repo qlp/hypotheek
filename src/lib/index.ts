@@ -33,7 +33,7 @@ export interface MortgageResult {
 }
 
 function normalizeRate(x: number): number {
-	return x > 1.0 ? x / 100.0 : x;
+	return x / 100.0;
 }
 
 function formatEuro(bedrag: number): string {

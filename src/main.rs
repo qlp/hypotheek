@@ -6,21 +6,20 @@ use clap::Parser;
 struct Args {
     /// Principal / loan amount (e.g. 670000)
     lening: f64,
-    /// Yearly interest rate. If > 1.0 it's treated as a percent (e.g. 4.32 = 4.32%).
+    /// Yearly interest rate as percentage (e.g. 4.32 = 4.32%)
     rente: f64,
     /// Duration in years (e.g. 30)
     looptijd_jaren: u32,
-    /// Yearly inflation rate. If > 1.0 it's treated as a percent (e.g. 2 = 2%).
+    /// Yearly inflation rate as percentage (e.g. 2 = 2%)
     inflatie: f64,
     /// Years of mortgage interest deduction (HRA) (e.g. 10)
     hra_jaren: u32,
-    /// Income tax rate for HRA benefit. If > 1.0 it's treated as a percent (e.g. 36.93 = 36.93%).
+    /// Income tax rate for HRA benefit as percentage (e.g. 36.93 = 36.93%)
     belastingtarief: f64,
 }
 
 fn normalize_rate(x: f64) -> f64 {
-    // Accept either decimal (0.0432) or percentage (4.32)
-    if x > 1.0 { x / 100.0 } else { x }
+    x / 100.0
 }
 
 fn main() {
