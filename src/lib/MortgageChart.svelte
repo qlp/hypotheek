@@ -15,17 +15,17 @@
 
 		// Sample every 12 months for readability
 		const sampledData = data.filter((_, index) => index % 12 === 0);
-		const labels = sampledData.map(d => `Jaar ${Math.ceil(d.maand / 12)}`);
+		const labels = sampledData.map((d) => `Jaar ${Math.ceil(d.maand / 12)}`);
 
-		const aflossing = sampledData.map(d => isReal ? d.aflossing_reel : d.aflossing);
-		const renteNetto = sampledData.map(d => isReal ? d.renteNetto_reel : d.renteNetto);
-		const hraVoordeel = sampledData.map(d => isReal ? d.hraVoordeel_reel : d.hraVoordeel);
+		const aflossing = sampledData.map((d) => (isReal ? d.aflossing_reel : d.aflossing));
+		const renteNetto = sampledData.map((d) => (isReal ? d.renteNetto_reel : d.renteNetto));
+		const hraVoordeel = sampledData.map((d) => (isReal ? d.hraVoordeel_reel : d.hraVoordeel));
 
 		chart.data.labels = labels;
 		chart.data.datasets[0].data = aflossing;
 		chart.data.datasets[1].data = renteNetto;
 		chart.data.datasets[2].data = hraVoordeel;
-		
+
 		// Update colors for Safari compatibility
 		chart.data.datasets[0].backgroundColor = 'rgba(59, 130, 246, 0.8)';
 		chart.data.datasets[0].borderColor = 'rgba(59, 130, 246, 1)';
@@ -38,17 +38,17 @@
 
 	onMount(() => {
 		Chart.register(...registerables);
-		
+
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
 
 		// Sample every 12 months for readability
 		const sampledData = data.filter((_, index) => index % 12 === 0);
-		const labels = sampledData.map(d => `Jaar ${Math.ceil(d.maand / 12)}`);
+		const labels = sampledData.map((d) => `Jaar ${Math.ceil(d.maand / 12)}`);
 
-		const aflossing = sampledData.map(d => isReal ? d.aflossing_reel : d.aflossing);
-		const renteNetto = sampledData.map(d => isReal ? d.renteNetto_reel : d.renteNetto);
-		const hraVoordeel = sampledData.map(d => isReal ? d.hraVoordeel_reel : d.hraVoordeel);
+		const aflossing = sampledData.map((d) => (isReal ? d.aflossing_reel : d.aflossing));
+		const renteNetto = sampledData.map((d) => (isReal ? d.renteNetto_reel : d.renteNetto));
+		const hraVoordeel = sampledData.map((d) => (isReal ? d.hraVoordeel_reel : d.hraVoordeel));
 
 		chart = new Chart(ctx, {
 			type: 'bar',
@@ -92,7 +92,7 @@
 						stacked: true,
 						beginAtZero: true,
 						ticks: {
-							callback: function(value) {
+							callback: function (value) {
 								return '€' + Math.round(Number(value)).toLocaleString('nl-NL');
 							}
 						}
@@ -112,7 +112,7 @@
 					},
 					tooltip: {
 						callbacks: {
-							label: function(context) {
+							label: function (context) {
 								const label = context.dataset.label || '';
 								const value = Math.round(Number(context.parsed.y));
 								return `${label}: €${value.toLocaleString('nl-NL')}`;

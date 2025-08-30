@@ -22,7 +22,7 @@
 		const max = parseFloat(element.max);
 		const value = parseFloat(element.value);
 		const percentage = ((value - min) / (max - min)) * 100;
-		
+
 		element.style.background = `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`;
 	}
 
@@ -58,10 +58,10 @@
 
 	onMount(() => {
 		calculate();
-		
+
 		// Initialize slider backgrounds
 		const sliders = document.querySelectorAll('input[type="range"]');
-		sliders.forEach(slider => {
+		sliders.forEach((slider) => {
 			updateSliderBackground(slider as HTMLInputElement);
 		});
 	});
@@ -283,15 +283,11 @@
 	{#if result}
 		<div class="space-y-6">
 			<h2 class="text-2xl font-semibold text-gray-800">Maandelijkse kosten over tijd</h2>
-			
+
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<MortgageChart 
-					data={result.monthlyData} 
-					title="Nominale bedragen"
-					isReal={false}
-				/>
-				<MortgageChart 
-					data={result.monthlyData} 
+				<MortgageChart data={result.monthlyData} title="Nominale bedragen" isReal={false} />
+				<MortgageChart
+					data={result.monthlyData}
 					title="Reële bedragen (inflatie-gecorrigeerd)"
 					isReal={true}
 				/>
