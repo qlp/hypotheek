@@ -61,7 +61,7 @@
 					const parsed = JSON.parse(saved);
 					// Merge with defaults to handle new fields
 					inputs = { ...defaultInputs, ...parsed };
-				} catch (e) {
+				} catch {
 					console.warn('Failed to parse saved inputs, using defaults');
 				}
 			}
@@ -98,7 +98,7 @@
 	onMount(() => {
 		// Load saved inputs first
 		loadInputs();
-		
+
 		// Use setTimeout to ensure DOM is updated with loaded values
 		setTimeout(() => {
 			// Initialize slider backgrounds after inputs are loaded
@@ -107,7 +107,7 @@
 				updateSliderBackground(slider as HTMLInputElement);
 			});
 		}, 0);
-		
+
 		calculate();
 	});
 </script>
@@ -141,14 +141,18 @@
 
 			<div class="space-y-3">
 				<div>
-					<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+					<div class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 						{t.mortgageType}
-					</label>
+					</div>
 					<div class="flex rounded-md border border-gray-300 dark:border-gray-600 overflow-hidden">
 						<button
 							type="button"
-							onclick={() => { inputs.hypotheekType = 'annuiteit'; calculate(); }}
-							class="flex-1 px-4 py-2 text-sm font-medium transition-colors {inputs.hypotheekType === 'annuiteit'
+							onclick={() => {
+								inputs.hypotheekType = 'annuiteit';
+								calculate();
+							}}
+							class="flex-1 px-4 py-2 text-sm font-medium transition-colors {inputs.hypotheekType ===
+							'annuiteit'
 								? 'bg-blue-600 text-white'
 								: 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'}"
 						>
@@ -156,8 +160,12 @@
 						</button>
 						<button
 							type="button"
-							onclick={() => { inputs.hypotheekType = 'lineair'; calculate(); }}
-							class="flex-1 px-4 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-600 transition-colors {inputs.hypotheekType === 'lineair'
+							onclick={() => {
+								inputs.hypotheekType = 'lineair';
+								calculate();
+							}}
+							class="flex-1 px-4 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-600 transition-colors {inputs.hypotheekType ===
+							'lineair'
 								? 'bg-blue-600 text-white'
 								: 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'}"
 						>
@@ -342,7 +350,6 @@
 					</div>
 				</div>
 
-
 				<div>
 					<label class="flex items-center space-x-2">
 						<input
@@ -428,7 +435,9 @@
 						<tbody class="divide-y divide-gray-200">
 							<tr>
 								<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
-									>{result.hypotheekType === 'annuiteit' ? t.monthlyPayment : t.firstMonthlyPayment}</td
+									>{result.hypotheekType === 'annuiteit'
+										? t.monthlyPayment
+										: t.firstMonthlyPayment}</td
 								>
 								<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
 									>{formatEuro(result.annuiteit, locale)}</td

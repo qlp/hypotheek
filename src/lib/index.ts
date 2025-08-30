@@ -65,9 +65,10 @@ export const calculateMortgage = (
 		const renteM = rente / 12.0;
 
 		// For annuity: fixed monthly payment, for linear: fixed monthly principal repayment
-		const annuiteit = inputs.hypotheekType === 'annuiteit' 
-			? (inputs.lening * renteM) / (1.0 - Math.pow(1.0 + renteM, -nMaanden))
-			: 0;
+		const annuiteit =
+			inputs.hypotheekType === 'annuiteit'
+				? (inputs.lening * renteM) / (1.0 - Math.pow(1.0 + renteM, -nMaanden))
+				: 0;
 		const lineaireAflossing = inputs.hypotheekType === 'lineair' ? inputs.lening / nMaanden : 0;
 
 		let schuld = inputs.lening;
@@ -77,12 +78,10 @@ export const calculateMortgage = (
 
 		for (let maand = 1; maand <= nMaanden; maand++) {
 			const renteBetaling = schuld * renteM;
-			const aflossing = inputs.hypotheekType === 'annuiteit' 
-				? annuiteit - renteBetaling 
-				: lineaireAflossing;
-			const maandlast = inputs.hypotheekType === 'annuiteit' 
-				? annuiteit 
-				: aflossing + renteBetaling;
+			const aflossing =
+				inputs.hypotheekType === 'annuiteit' ? annuiteit - renteBetaling : lineaireAflossing;
+			const maandlast =
+				inputs.hypotheekType === 'annuiteit' ? annuiteit : aflossing + renteBetaling;
 
 			let nettoBetaling = maandlast;
 			let hraVoordeel = 0;
@@ -145,7 +144,11 @@ export const calculateMortgage = (
 		const verschilReelPerMaand = verschilReel / nMaanden;
 
 		return {
-			annuiteit: inputs.hypotheekType === 'annuiteit' ? annuiteit : monthlyData[0]?.aflossing + monthlyData[0]?.renteNetto + monthlyData[0]?.hraVoordeel || 0,
+			annuiteit:
+				inputs.hypotheekType === 'annuiteit'
+					? annuiteit
+					: monthlyData[0]?.aflossing + monthlyData[0]?.renteNetto + monthlyData[0]?.hraVoordeel ||
+						0,
 			annuiteitReel,
 			totaalNominaal,
 			totaalReel,
