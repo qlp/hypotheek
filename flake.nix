@@ -1,5 +1,5 @@
 {
-  description = "Svelte Effect Nix Template";
+  description = "Hypotheek CLI";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";

@@ -1,0 +1,10 @@
+[package]
+name = "hypotheek-cli"
+version = "0.1.0"
+edition = "2021"
+authors = ["You"]
+description = "CLI to compute annuity mortgage totals with inflation and Dutch mortgage interest deduction (HRA)."
+license = "MIT"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
