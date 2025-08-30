@@ -11,7 +11,9 @@
 		looptijdJaren: 30,
 		inflatie: 2,
 		hraJaren: 10,
-		belastingtarief: 36.93
+		belastingtarief: 36.93,
+		hraLinearAfbouw: false,
+		hraEindPercentage: 0
 	};
 
 	let result: MortgageResult | null = null;
@@ -173,7 +175,9 @@
 				</div>
 
 				<div>
-					<label for="hra" class="block text-sm font-medium text-gray-700 mb-1">HRA jaren</label>
+					<label for="hra" class="block text-sm font-medium text-gray-700 mb-1">
+						{inputs.hraLinearAfbouw ? 'HRA afbouw periode (jaren)' : 'HRA jaren'}
+					</label>
 					<div class="space-y-2">
 						<input
 							id="hra"
@@ -195,9 +199,9 @@
 				</div>
 
 				<div>
-					<label for="belasting" class="block text-sm font-medium text-gray-700 mb-1"
-						>Belastingtarief (%)</label
-					>
+					<label for="belasting" class="block text-sm font-medium text-gray-700 mb-1">
+						{inputs.hraLinearAfbouw ? 'HRA start percentage (%)' : 'Belastingtarief (%)'}
+					</label>
 					<div class="space-y-2">
 						<input
 							id="belasting"
@@ -218,6 +222,45 @@
 						/>
 					</div>
 				</div>
+
+				<div>
+					<label class="flex items-center space-x-2">
+						<input
+							type="checkbox"
+							bind:checked={inputs.hraLinearAfbouw}
+							onchange={calculate}
+							class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+						/>
+						<span class="text-sm font-medium text-gray-700">HRA lineair afbouwen</span>
+					</label>
+				</div>
+
+				{#if inputs.hraLinearAfbouw}
+					<div>
+						<label for="hraEind" class="block text-sm font-medium text-gray-700 mb-1">
+							HRA eind percentage (%)
+						</label>
+						<div class="space-y-2">
+							<input
+								id="hraEind"
+								bind:value={inputs.hraEindPercentage}
+								type="number"
+								step="0.01"
+								class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								oninput={calculate}
+							/>
+							<input
+								bind:value={inputs.hraEindPercentage}
+								type="range"
+								min="0"
+								max="20"
+								step="0.1"
+								class="w-full"
+								oninput={handleSliderInput}
+							/>
+						</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 

@@ -16,6 +16,18 @@ struct Args {
     hra_jaren: u32,
     /// Income tax rate for HRA benefit as percentage (e.g. 36.93 = 36.93%)
     belastingtarief: f64,
+    /// Enable linear HRA reduction
+    #[arg(long)]
+    hra_linear_afbouw: bool,
+    /// HRA start percentage for linear reduction
+    #[arg(long, default_value = "36.93")]
+    hra_start_percentage: f64,
+    /// Years over which to reduce HRA linearly
+    #[arg(long, default_value = "15")]
+    hra_afbouw_jaren: u32,
+    /// HRA end percentage for linear reduction
+    #[arg(long, default_value = "0")]
+    hra_eind_percentage: f64,
 }
 
 fn normalize_rate(x: f64) -> f64 {
@@ -29,6 +41,9 @@ fn main() {
     let inflatie = normalize_rate(args.inflatie);
     let belastingtarief = normalize_rate(args.belastingtarief);
 
+    let hra_start_percentage = normalize_rate(args.hra_start_percentage);
+    let hra_eind_percentage = normalize_rate(args.hra_eind_percentage);
+
     bereken_hypotheek(
         args.lening,
         rente,
@@ -36,10 +51,14 @@ fn main() {
         inflatie,
         args.hra_jaren,
         belastingtarief,
+        args.hra_linear_afbouw,
+        hra_start_percentage,
+        args.hra_afbouw_jaren,
+        hra_eind_percentage,
     );
 }
 
-fn bereken_hypotheek(lening: f64, rente: f64, looptijd_jaren: u32, inflatie: f64, hra_jaren: u32, belastingtarief: f64) {
+fn bereken_hypotheek(lening: f64, rente: f64, looptijd_jaren: u32, inflatie: f64, hra_jaren: u32, belastingtarief: f64, hra_linear_afbouw: bool, hra_start_percentage: f64, hra_afbouw_jaren: u32, hra_eind_percentage: f64) {
     let n_maanden = looptijd_jaren * 12;
     let rente_m = rente / 12.0;
 
@@ -54,11 +73,23 @@ fn bereken_hypotheek(lening: f64, rente: f64, looptijd_jaren: u32, inflatie: f64
         let rente_betaling = schuld * rente_m;
         let aflossing = annuiteit - rente_betaling;
 
-        // Hypotheekrenteaftrek alleen in eerste hra_jaren
+        // Hypotheekrenteaftrek berekening
         let mut netto_betaling = annuiteit;
-        if maand <= hra_jaren * 12 {
-            let belasting_voordeel = rente_betaling * belastingtarief;
-            netto_betaling -= belasting_voordeel;
+        if hra_linear_afbouw {
+            // Linear afbouw van HRA
+            let afbouw_maanden = hra_afbouw_jaren * 12;
+            if maand <= afbouw_maanden {
+                let progress = (maand - 1) as f64 / (afbouw_maanden - 1) as f64;
+                let huidig_tarief = hra_start_percentage - (hra_start_percentage - hra_eind_percentage) * progress;
+                let belasting_voordeel = rente_betaling * huidig_tarief;
+                netto_betaling -= belasting_voordeel;
+            }
+        } else {
+            // Traditionele HRA
+            if maand <= hra_jaren * 12 {
+                let belasting_voordeel = rente_betaling * belastingtarief;
+                netto_betaling -= belasting_voordeel;
+            }
         }
 
         // contant maken naar vandaag (inflatie-discount)

@@ -7,6 +7,8 @@ export interface MortgageInputs {
 	inflatie: number;
 	hraJaren: number;
 	belastingtarief: number;
+	hraLinearAfbouw: boolean;
+	hraEindPercentage: number;
 }
 
 export interface MonthlyData {
@@ -76,9 +78,24 @@ export const calculateMortgage = (
 
 			let nettoBetaling = annuiteit;
 			let hraVoordeel = 0;
-			if (maand <= inputs.hraJaren * 12) {
-				hraVoordeel = renteBetaling * belastingtarief;
-				nettoBetaling -= hraVoordeel;
+
+			if (inputs.hraLinearAfbouw) {
+				// Linear afbouw van HRA - gebruik bestaande velden
+				const afbouwMaanden = inputs.hraJaren * 12;
+				if (maand <= afbouwMaanden) {
+					const startTarief = belastingtarief;
+					const eindTarief = normalizeRate(inputs.hraEindPercentage);
+					const progress = (maand - 1) / (afbouwMaanden - 1);
+					const huidigTarief = startTarief - (startTarief - eindTarief) * progress;
+					hraVoordeel = renteBetaling * huidigTarief;
+					nettoBetaling -= hraVoordeel;
+				}
+			} else {
+				// Traditionele HRA
+				if (maand <= inputs.hraJaren * 12) {
+					hraVoordeel = renteBetaling * belastingtarief;
+					nettoBetaling -= hraVoordeel;
+				}
 			}
 
 			const renteNetto = renteBetaling - hraVoordeel;
