@@ -7,7 +7,7 @@
 	import { dutch, english } from '$lib/i18n';
 	import { onMount } from 'svelte';
 
-	let inputs: MortgageInputs = {
+	const defaultInputs: MortgageInputs = {
 		lening: 500000,
 		rente: 5.0,
 		looptijdJaren: 30,
@@ -18,6 +18,8 @@
 		hraEindPercentage: 0,
 		hypotheekType: 'annuiteit'
 	};
+
+	let inputs: MortgageInputs = { ...defaultInputs };
 
 	let result: MortgageResult | null = null;
 	let calculating = false;
@@ -45,9 +47,33 @@
 		calculate();
 	}
 
+	function saveInputs() {
+		if (typeof localStorage !== 'undefined') {
+			localStorage.setItem('hypotheek-inputs', JSON.stringify(inputs));
+		}
+	}
+
+	function loadInputs() {
+		if (typeof localStorage !== 'undefined') {
+			const saved = localStorage.getItem('hypotheek-inputs');
+			if (saved) {
+				try {
+					const parsed = JSON.parse(saved);
+					// Merge with defaults to handle new fields
+					inputs = { ...defaultInputs, ...parsed };
+				} catch (e) {
+					console.warn('Failed to parse saved inputs, using defaults');
+				}
+			}
+		}
+	}
+
 	function calculate() {
 		calculating = true;
 		showCalculating = false;
+
+		// Save inputs after each calculation
+		saveInputs();
 
 		// Toon "Berekenen..." alleen na 200ms
 		const timer = setTimeout(() => {
@@ -70,13 +96,19 @@
 	}
 
 	onMount(() => {
+		// Load saved inputs first
+		loadInputs();
+		
+		// Use setTimeout to ensure DOM is updated with loaded values
+		setTimeout(() => {
+			// Initialize slider backgrounds after inputs are loaded
+			const sliders = document.querySelectorAll('input[type="range"]');
+			sliders.forEach((slider) => {
+				updateSliderBackground(slider as HTMLInputElement);
+			});
+		}, 0);
+		
 		calculate();
-
-		// Initialize slider backgrounds
-		const sliders = document.querySelectorAll('input[type="range"]');
-		sliders.forEach((slider) => {
-			updateSliderBackground(slider as HTMLInputElement);
-		});
 	});
 </script>
 
