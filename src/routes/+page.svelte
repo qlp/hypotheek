@@ -3,6 +3,7 @@
 	import { calculateMortgage, formatEuro, type MortgageInputs, type MortgageResult } from '$lib';
 	import MortgageChart from '$lib/MortgageChart.svelte';
 	import MortgageDataTable from '$lib/MortgageDataTable.svelte';
+	import ChartLegend from '$lib/ChartLegend.svelte';
 	import { dutch, english } from '$lib/i18n';
 	import { onMount } from 'svelte';
 
@@ -419,11 +420,12 @@
 							{t.monthlyCostsOverTime}
 						</h3>
 
-						<div class="grid grid-cols-1 gap-6">
+						<div class="space-y-4">
 							<MortgageChart
 								data={result.monthlyData}
 								title={t.nominalAmounts}
 								isReal={false}
+								showLegend={false}
 								{t}
 								{locale}
 							/>
@@ -431,9 +433,11 @@
 								data={result.monthlyData}
 								title={t.realAmounts}
 								isReal={true}
+								showLegend={false}
 								{t}
 								{locale}
 							/>
+							<ChartLegend {t} />
 						</div>
 					</div>
 				{/if}
