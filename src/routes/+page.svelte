@@ -406,7 +406,6 @@
 	{/if}
 
 	<div class="text-xs text-gray-500 mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-		<strong>DISCLAIMER:</strong>
 		{t.disclaimer}
 	</div>
 </div>
