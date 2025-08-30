@@ -114,10 +114,10 @@
 
 <div class="space-y-4">
 	<div class="flex justify-between items-center">
-		<h3 class="text-lg font-semibold text-gray-800">{t.yearlyOverview}</h3>
+		<h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{t.yearlyOverview}</h3>
 		<button
 			onclick={toggleAll}
-			class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
+			class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
 		>
 			{yearlyData.length > 0 && yearlyData.every((y) => expandedYears.has(y.year))
 				? t.collapseAll
@@ -126,57 +126,64 @@
 	</div>
 
 	<div class="overflow-x-auto">
-		<table class="w-full bg-white border border-gray-200 rounded-lg">
-			<thead class="bg-gray-50">
+		<table
+			class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+		>
+			<thead class="bg-gray-50 dark:bg-gray-700">
 				<tr>
 					<th
-						class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+						class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap"
 					>
 						{t.year}
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
 					>
 						{t.repayment} (nom.)
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
 					>
 						{t.netInterest} (nom.)
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
 						title={t.hraTooltip}
 					>
 						{t.hraBenefit} (nom.)
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
 					>
 						{t.repayment} (reëel)
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
 					>
 						{t.netInterest} (reëel)
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
 						title={t.hraTooltip}
 					>
 						{t.hraBenefit} (reëel)
 					</th>
 					<th
-						class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+						class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
 					>
 						{t.cumulativeInflation}
 					</th>
 				</tr>
 			</thead>
-			<tbody class="divide-y divide-gray-200">
+			<tbody class="divide-y divide-gray-200 dark:divide-gray-600">
 				{#each yearlyData as yearData (yearData.year)}
-					<tr class="hover:bg-gray-50 cursor-pointer" onclick={() => toggleYear(yearData.year)}>
-						<td class="px-4 py-3 text-sm font-medium text-gray-900">
+					<tr
+						class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+						onclick={() => toggleYear(yearData.year)}
+					>
+						<td
+							class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap"
+						>
 							<div class="flex items-center">
 								<span class="mr-2 text-gray-400">
 									{expandedYears.has(yearData.year) ? '▼' : '▶'}
@@ -185,19 +192,19 @@
 								{yearData.year}
 							</div>
 						</td>
-						<td class="px-4 py-3 text-sm text-right"
+						<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
 							>{formatEuro(yearData.totals.aflossing, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right"
+						<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
 							>{formatEuro(yearData.totals.renteNetto, locale)}</td
 						>
 						<td class="px-4 py-3 text-sm text-right text-green-600"
 							>{formatEuro(yearData.totals.hraVoordeel, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right"
+						<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
 							>{formatEuro(yearData.totals.aflossing_reel, locale)}</td
 						>
-						<td class="px-4 py-3 text-sm text-right"
+						<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
 							>{formatEuro(yearData.totals.renteNetto_reel, locale)}</td
 						>
 						<td class="px-4 py-3 text-sm text-right text-green-600"
@@ -209,24 +216,23 @@
 					</tr>
 					{#if expandedYears.has(yearData.year)}
 						{#each yearData.months as monthData (monthData.maand)}
-							<tr class="bg-gray-25">
-								<td class="px-8 py-2 text-xs text-gray-600">
-									{getMonthName(monthData.maand)} ({t.month}
-									{monthData.maand})
+							<tr class="bg-gray-25 dark:bg-gray-800/50">
+								<td class="px-8 py-2 text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
+									{getMonthName(monthData.maand)} ({monthData.maand})
 								</td>
-								<td class="px-4 py-2 text-xs text-right"
+								<td class="px-4 py-2 text-xs text-right text-gray-900 dark:text-gray-100"
 									>{formatEuro(monthData.aflossing, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right"
+								<td class="px-4 py-2 text-xs text-right text-gray-900 dark:text-gray-100"
 									>{formatEuro(monthData.renteNetto, locale)}</td
 								>
 								<td class="px-4 py-2 text-xs text-right text-green-600"
 									>{formatEuro(monthData.hraVoordeel, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right"
+								<td class="px-4 py-2 text-xs text-right text-gray-900 dark:text-gray-100"
 									>{formatEuro(monthData.aflossing_reel, locale)}</td
 								>
-								<td class="px-4 py-2 text-xs text-right"
+								<td class="px-4 py-2 text-xs text-right text-gray-900 dark:text-gray-100"
 									>{formatEuro(monthData.renteNetto_reel, locale)}</td
 								>
 								<td class="px-4 py-2 text-xs text-right text-green-600"
