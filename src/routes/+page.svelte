@@ -4,6 +4,7 @@
 	import MortgageChart from '$lib/MortgageChart.svelte';
 	import MortgageDataTable from '$lib/MortgageDataTable.svelte';
 	import ChartLegend from '$lib/ChartLegend.svelte';
+	import SavingsComparisonTable from '$lib/SavingsComparisonTable.svelte';
 	import { dutch, english } from '$lib/i18n';
 	import { onMount } from 'svelte';
 
@@ -16,7 +17,9 @@
 		belastingtarief: 37.48,
 		hraLinearAfbouw: true,
 		hraEindPercentage: 0,
-		hypotheekType: 'annuiteit'
+		hypotheekType: 'annuiteit',
+		beleggingsRendement: 5.0,
+		vermogensheffing: 1.2
 	};
 
 	let inputs: MortgageInputs = { ...defaultInputs };
@@ -403,6 +406,65 @@
 						</div>
 					</div>
 				{/if}
+
+				<div class="border-t pt-4 mt-4 space-y-3">
+						<div>
+							<label
+								for="rendement"
+								class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+							>
+								Beleggingsrendement (%)
+							</label>
+							<div class="space-y-2">
+								<input
+									id="rendement"
+									bind:value={inputs.beleggingsRendement}
+									type="number"
+									step="0.01"
+									class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+									oninput={calculate}
+								/>
+								<input
+									bind:value={inputs.beleggingsRendement}
+									type="range"
+									min="0"
+									max="15"
+									step="0.1"
+									class="w-full"
+									oninput={handleSliderInput}
+								/>
+							</div>
+						</div>
+
+						<div>
+							<label
+								for="vermogensheffing"
+								class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+							>
+								Vermogensheffing (%)
+							</label>
+							<div class="space-y-2">
+								<input
+									id="vermogensheffing"
+									bind:value={inputs.vermogensheffing}
+									type="number"
+									step="0.01"
+									class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+									oninput={calculate}
+								/>
+								<input
+									bind:value={inputs.vermogensheffing}
+									type="range"
+									min="0"
+									max="5"
+									step="0.1"
+									class="w-full"
+									oninput={handleSliderInput}
+								/>
+							</div>
+						</div>
+					</div>
+
 			</div>
 		</div>
 
@@ -495,6 +557,7 @@
 								title={t.nominalAmounts}
 								isReal={false}
 								showLegend={false}
+								showComparison={true}
 								{t}
 								{locale}
 							/>
@@ -503,11 +566,13 @@
 								title={t.realAmounts}
 								isReal={true}
 								showLegend={false}
+								showComparison={true}
 								{t}
 								{locale}
 							/>
-							<ChartLegend {t} />
+							<ChartLegend {t} showComparison={true} />
 						</div>
+
 					</div>
 				{/if}
 			{/if}
@@ -516,6 +581,14 @@
 
 	{#if result}
 		<MortgageDataTable data={result.monthlyData} {t} {locale} />
+		<SavingsComparisonTable 
+			data={result.monthlyData} 
+			{t} 
+			{locale} 
+			beleggingsRendement={inputs.beleggingsRendement}
+			vermogensheffing={inputs.vermogensheffing}
+			hypotheekType={inputs.hypotheekType}
+		/>
 	{/if}
 
 	<div

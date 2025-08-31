@@ -10,6 +10,8 @@ export interface MortgageInputs {
 	hraLinearAfbouw: boolean;
 	hraEindPercentage: number;
 	hypotheekType: 'annuiteit' | 'lineair';
+	beleggingsRendement: number;
+	vermogensheffing: number;
 }
 
 export interface MonthlyData {
@@ -21,6 +23,9 @@ export interface MonthlyData {
 	renteNetto_reel: number;
 	hraVoordeel_reel: number;
 	cumulatieveInflatie: number;
+	verschilAnnuiteit: number;
+	vergelijkingTotal: number;
+	vergelijkingTotal_reel: number;
 }
 
 export interface MortgageResult {
@@ -76,6 +81,10 @@ export const calculateMortgage = (
 		let totaalReel = 0.0;
 		const monthlyData: MonthlyData[] = [];
 
+		// Voor vergelijking: bereken altijd annuïteit scenario
+		const annuiteitVergelijking = (inputs.lening * renteM) / (1.0 - Math.pow(1.0 + renteM, -nMaanden));
+		let schuldAnnuiteit = inputs.lening;
+
 		for (let maand = 1; maand <= nMaanden; maand++) {
 			const renteBetaling = schuld * renteM;
 			const aflossing =
@@ -107,6 +116,64 @@ export const calculateMortgage = (
 
 			const renteNetto = renteBetaling - hraVoordeel;
 
+			// Bereken vergelijking met het andere hypotheektype
+			let verschilAnnuiteit = 0;
+			let vergelijkingTotal = 0;
+			
+			if (inputs.hypotheekType === 'lineair') {
+				// Bereken annuïteit scenario
+				const renteBetalingAnnuiteit = schuldAnnuiteit * renteM;
+				const aflossignAnnuiteit = annuiteitVergelijking - renteBetalingAnnuiteit;
+				
+				let hraVoordeelAnnuiteit = 0;
+				if (inputs.hraLinearAfbouw) {
+					const afbouwMaanden = inputs.hraJaren * 12;
+					if (maand <= afbouwMaanden) {
+						const startTarief = belastingtarief;
+						const eindTarief = normalizeRate(inputs.hraEindPercentage);
+						const progress = (maand - 1) / (afbouwMaanden - 1);
+						const huidigTarief = startTarief - (startTarief - eindTarief) * progress;
+						hraVoordeelAnnuiteit = renteBetalingAnnuiteit * huidigTarief;
+					}
+				} else {
+					if (maand <= inputs.hraJaren * 12) {
+						hraVoordeelAnnuiteit = renteBetalingAnnuiteit * belastingtarief;
+					}
+				}
+				
+				const renteNettoAnnuiteit = renteBetalingAnnuiteit - hraVoordeelAnnuiteit;
+				const totalAnnuiteit = aflossignAnnuiteit + renteNettoAnnuiteit;
+				const totalLineair = aflossing + renteNetto;
+				
+				verschilAnnuiteit = totalLineair - totalAnnuiteit;
+				vergelijkingTotal = totalAnnuiteit; // Toon annuiteit totaal
+				schuldAnnuiteit -= aflossignAnnuiteit;
+			} else {
+				// Voor annuïteit: bereken lineair scenario
+				const lineaireAflossignVergelijking = inputs.lening / nMaanden;
+				const schuldLineair = inputs.lening - (lineaireAflossignVergelijking * (maand - 1));
+				const renteBetalingLineair = schuldLineair * renteM;
+				
+				let hraVoordeelLineair = 0;
+				if (inputs.hraLinearAfbouw) {
+					const afbouwMaanden = inputs.hraJaren * 12;
+					if (maand <= afbouwMaanden) {
+						const startTarief = belastingtarief;
+						const eindTarief = normalizeRate(inputs.hraEindPercentage);
+						const progress = (maand - 1) / (afbouwMaanden - 1);
+						const huidigTarief = startTarief - (startTarief - eindTarief) * progress;
+						hraVoordeelLineair = renteBetalingLineair * huidigTarief;
+					}
+				} else {
+					if (maand <= inputs.hraJaren * 12) {
+						hraVoordeelLineair = renteBetalingLineair * belastingtarief;
+					}
+				}
+				
+				const renteNettoLineair = renteBetalingLineair - hraVoordeelLineair;
+				vergelijkingTotal = lineaireAflossignVergelijking + renteNettoLineair; // Toon lineair totaal
+			}
+
 			const jaren = maand / 12.0;
 			const discountFactor = Math.pow(1.0 + inflatie, jaren);
 			const reelBetaling = nettoBetaling / discountFactor;
@@ -115,6 +182,7 @@ export const calculateMortgage = (
 			const aflossing_reel = aflossing / discountFactor;
 			const renteNetto_reel = renteNetto / discountFactor;
 			const hraVoordeel_reel = hraVoordeel / discountFactor;
+			const vergelijkingTotal_reel = vergelijkingTotal / discountFactor;
 
 			monthlyData.push({
 				maand,
@@ -124,7 +192,10 @@ export const calculateMortgage = (
 				aflossing_reel,
 				renteNetto_reel,
 				hraVoordeel_reel,
-				cumulatieveInflatie: (discountFactor - 1) * 100
+				cumulatieveInflatie: (discountFactor - 1) * 100,
+				verschilAnnuiteit,
+				vergelijkingTotal,
+				vergelijkingTotal_reel
 			});
 
 			totaalNominaal += nettoBetaling;

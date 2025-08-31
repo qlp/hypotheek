@@ -9,6 +9,7 @@
 	export let isReal: boolean = false;
 	export let showBoth: boolean = false;
 	export let showLegend: boolean = true;
+	export let showComparison: boolean = false;
 	export let t: Translations;
 	export let locale: string;
 
@@ -61,6 +62,13 @@
 			chart.data.datasets[0].label = t.repayment;
 			chart.data.datasets[1].label = t.netInterest;
 			chart.data.datasets[2].label = t.hraBenefit;
+
+			// Add comparison line if enabled
+			if (showComparison) {
+				const vergelijking = sampledData.map((d) => isReal ? d.vergelijkingTotal_reel : d.vergelijkingTotal);
+				chart.data.datasets[3].data = vergelijking;
+				chart.data.datasets[3].label = 'Vergelijking';
+			}
 		}
 
 		// Update title
@@ -84,6 +92,10 @@
 			chart.data.datasets[4].borderColor = 'rgba(239, 68, 68, 0.7)';
 			chart.data.datasets[5].backgroundColor = 'rgba(34, 197, 94, 0.3)';
 			chart.data.datasets[5].borderColor = 'rgba(34, 197, 94, 0.5)';
+		} else if (showComparison && chart.data.datasets[3]) {
+			// Comparison line styling
+			chart.data.datasets[3].backgroundColor = 'rgba(147, 51, 234, 0.1)';
+			chart.data.datasets[3].borderColor = 'rgba(147, 51, 234, 1)';
 		}
 
 		chart.update();
@@ -182,10 +194,25 @@
 					borderWidth: 1
 				}
 			];
+
+			// Add comparison line if enabled
+			if (showComparison) {
+				const vergelijking = sampledData.map((d) => isReal ? d.vergelijkingTotal_reel : d.vergelijkingTotal);
+				datasets.push({
+					label: 'Vergelijking',
+					data: vergelijking,
+					type: 'line',
+					backgroundColor: 'rgba(147, 51, 234, 0.1)',
+					borderColor: 'rgba(147, 51, 234, 1)',
+					borderWidth: 3,
+					fill: false,
+					tension: 0.1
+				});
+			}
 		}
 
 		chart = new Chart(ctx, {
-			type: 'bar',
+			type: showComparison && !showBoth ? 'bar' : 'bar',
 			data: {
 				labels,
 				datasets
