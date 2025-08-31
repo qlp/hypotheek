@@ -26,7 +26,8 @@
 			"Bash(npm test)",
 			"Bash(convert:*)",
 			"Bash(nix develop:*)",
-			"Bash(npx prettier:*)"
+			"Bash(npx prettier:*)",
+			"Bash(pkill:*)"
 		],
 		"deny": []
 	}

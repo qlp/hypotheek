@@ -12,6 +12,7 @@
 	export let showComparison: boolean = false;
 	export let t: Translations;
 	export let locale: string;
+	export let currency: string = 'EUR';
 
 	let canvas: HTMLCanvasElement;
 	let chart: Chart;
@@ -65,9 +66,11 @@
 
 			// Add comparison line if enabled
 			if (showComparison) {
-				const vergelijking = sampledData.map((d) => isReal ? d.vergelijkingTotal_reel : d.vergelijkingTotal);
+				const vergelijking = sampledData.map((d) =>
+					isReal ? d.vergelijkingTotal_reel : d.vergelijkingTotal
+				);
 				chart.data.datasets[3].data = vergelijking;
-				chart.data.datasets[3].label = 'Vergelijking';
+				chart.data.datasets[3].label = t.comparison;
 			}
 		}
 
@@ -197,9 +200,12 @@
 
 			// Add comparison line if enabled
 			if (showComparison) {
-				const vergelijking = sampledData.map((d) => isReal ? d.vergelijkingTotal_reel : d.vergelijkingTotal);
-				datasets.push({
-					label: 'Vergelijking',
+				const vergelijking = sampledData.map((d) =>
+					isReal ? d.vergelijkingTotal_reel : d.vergelijkingTotal
+				);
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				(datasets as any).push({
+					label: t.comparison,
 					data: vergelijking,
 					type: 'line',
 					backgroundColor: 'rgba(147, 51, 234, 0.1)',
@@ -234,7 +240,7 @@
 							callback: function (value) {
 								return new Intl.NumberFormat(locale, {
 									style: 'currency',
-									currency: 'EUR',
+									currency: currency,
 									minimumFractionDigits: 0,
 									maximumFractionDigits: 0
 								}).format(Number(value));
@@ -262,7 +268,7 @@
 								const value = Math.round(Number(context.parsed.y));
 								const formattedValue = new Intl.NumberFormat(locale, {
 									style: 'currency',
-									currency: 'EUR',
+									currency: currency,
 									minimumFractionDigits: 0,
 									maximumFractionDigits: 0
 								}).format(value);

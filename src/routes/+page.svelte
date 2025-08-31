@@ -1,10 +1,17 @@
 <script lang="ts">
 	import { Effect } from 'effect';
-	import { calculateMortgage, formatEuro, type MortgageInputs, type MortgageResult } from '$lib';
+	import {
+		calculateMortgage,
+		formatCurrency,
+		type MortgageInputs,
+		type MortgageResult
+	} from '$lib';
 	import MortgageChart from '$lib/MortgageChart.svelte';
 	import MortgageDataTable from '$lib/MortgageDataTable.svelte';
 	import ChartLegend from '$lib/ChartLegend.svelte';
 	import SavingsComparisonTable from '$lib/SavingsComparisonTable.svelte';
+	import SavingsBalanceChart from '$lib/SavingsBalanceChart.svelte';
+	import CurrencySelector from '$lib/CurrencySelector.svelte';
 	import { dutch, english } from '$lib/i18n';
 	import { onMount } from 'svelte';
 
@@ -18,8 +25,10 @@
 		hraLinearAfbouw: true,
 		hraEindPercentage: 0,
 		hypotheekType: 'annuiteit',
-		beleggingsRendement: 5.0,
-		vermogensheffing: 1.2
+		beleggingsRendement: 6.0,
+		vermogensheffing: 1.2,
+		kredietRente: 12.0,
+		currency: 'EUR'
 	};
 
 	let inputs: MortgageInputs = { ...defaultInputs };
@@ -71,6 +80,11 @@
 		}
 	}
 
+	function handleCurrencyChange(newCurrency: string) {
+		inputs.currency = newCurrency;
+		calculate();
+	}
+
 	function calculate() {
 		calculating = true;
 		showCalculating = false;
@@ -116,25 +130,36 @@
 </script>
 
 <div class="max-w-4xl mx-auto p-6 space-y-6">
-	<div class="flex justify-between items-center">
-		<h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">{t.title}</h1>
-		<div class="flex space-x-2">
-			<button
-				onclick={() => (language = 'nl')}
-				class="px-3 py-1 text-sm rounded {language === 'nl'
-					? 'bg-blue-600 text-white'
-					: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}"
-			>
-				NL
-			</button>
-			<button
-				onclick={() => (language = 'en')}
-				class="px-3 py-1 text-sm rounded {language === 'en'
-					? 'bg-blue-600 text-white'
-					: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}"
-			>
-				EN
-			</button>
+	<div class="space-y-4">
+		<div class="flex justify-between items-center">
+			<h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">{t.title}</h1>
+			<div class="flex items-center space-x-2">
+				<CurrencySelector
+					selectedCurrency={inputs.currency}
+					onCurrencyChange={handleCurrencyChange}
+				/>
+				<button
+					onclick={() => (language = 'nl')}
+					class="px-3 py-1 text-sm rounded {language === 'nl'
+						? 'bg-blue-600 text-white'
+						: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}"
+				>
+					NL
+				</button>
+				<button
+					onclick={() => (language = 'en')}
+					class="px-3 py-1 text-sm rounded {language === 'en'
+						? 'bg-blue-600 text-white'
+						: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}"
+				>
+					EN
+				</button>
+			</div>
+		</div>
+		<div
+			class="text-xs text-gray-500 dark:text-gray-400 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-md"
+		>
+			{t.disclaimer}
 		</div>
 	</div>
 
@@ -408,63 +433,90 @@
 				{/if}
 
 				<div class="border-t pt-4 mt-4 space-y-3">
-						<div>
-							<label
-								for="rendement"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-							>
-								Beleggingsrendement (%)
-							</label>
-							<div class="space-y-2">
-								<input
-									id="rendement"
-									bind:value={inputs.beleggingsRendement}
-									type="number"
-									step="0.01"
-									class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-									oninput={calculate}
-								/>
-								<input
-									bind:value={inputs.beleggingsRendement}
-									type="range"
-									min="0"
-									max="15"
-									step="0.1"
-									class="w-full"
-									oninput={handleSliderInput}
-								/>
-							</div>
-						</div>
-
-						<div>
-							<label
-								for="vermogensheffing"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-							>
-								Vermogensheffing (%)
-							</label>
-							<div class="space-y-2">
-								<input
-									id="vermogensheffing"
-									bind:value={inputs.vermogensheffing}
-									type="number"
-									step="0.01"
-									class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-									oninput={calculate}
-								/>
-								<input
-									bind:value={inputs.vermogensheffing}
-									type="range"
-									min="0"
-									max="5"
-									step="0.1"
-									class="w-full"
-									oninput={handleSliderInput}
-								/>
-							</div>
+					<div>
+						<label
+							for="rendement"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>
+							{t.investmentReturn}
+						</label>
+						<div class="space-y-2">
+							<input
+								id="rendement"
+								bind:value={inputs.beleggingsRendement}
+								type="number"
+								step="0.01"
+								class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								oninput={calculate}
+							/>
+							<input
+								bind:value={inputs.beleggingsRendement}
+								type="range"
+								min="0"
+								max="15"
+								step="0.1"
+								class="w-full"
+								oninput={handleSliderInput}
+							/>
 						</div>
 					</div>
 
+					<div>
+						<label
+							for="vermogensheffing"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>
+							{t.wealthTax}
+						</label>
+						<div class="space-y-2">
+							<input
+								id="vermogensheffing"
+								bind:value={inputs.vermogensheffing}
+								type="number"
+								step="0.01"
+								class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								oninput={calculate}
+							/>
+							<input
+								bind:value={inputs.vermogensheffing}
+								type="range"
+								min="0"
+								max="5"
+								step="0.1"
+								class="w-full"
+								oninput={handleSliderInput}
+							/>
+						</div>
+					</div>
+
+					<div>
+						<label
+							for="kredietrente"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>
+							{t.creditInterest}
+						</label>
+						<div class="space-y-2">
+							<input
+								id="kredietrente"
+								bind:value={inputs.kredietRente}
+								type="number"
+								step="0.01"
+								class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								oninput={calculate}
+							/>
+							<input
+								bind:value={inputs.kredietRente}
+								type="range"
+								min="0"
+								max="15"
+								step="0.1"
+								class="w-full"
+								oninput={handleSliderInput}
+							/>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -474,120 +526,377 @@
 			{#if showCalculating}
 				<div class="text-blue-600 dark:text-blue-400">{t.calculating}</div>
 			{:else if result}
-				<div class="overflow-x-auto">
-					<table
-						class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
-					>
-						<thead class="bg-gray-50 dark:bg-gray-700">
-							<tr>
-								<th
-									class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-									>{t.metric}</th
-								>
-								<th
-									class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-									>{t.nominal}</th
-								>
-								<th
-									class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-									>{t.real}</th
-								>
-							</tr>
-						</thead>
-						<tbody class="divide-y divide-gray-200">
-							<tr>
-								<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
-									>{result.hypotheekType === 'annuiteit'
-										? t.monthlyPayment
-										: t.firstMonthlyPayment}</td
-								>
-								<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
-									>{formatEuro(result.annuiteit, locale)}</td
-								>
-								<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
-									>{formatEuro(result.annuiteitReel, locale)}</td
-								>
-							</tr>
-							<tr>
-								<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
-									>{t.totalPaid}</td
-								>
-								<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
-									>{formatEuro(result.totaalNominaal, locale)}</td
-								>
-								<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
-									>{formatEuro(result.totaalReel, locale)}</td
-								>
-							</tr>
-							<tr class="bg-amber-50 dark:bg-amber-900/20">
-								<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
-									>{t.extraCostsTotal}</td
-								>
-								<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
-									>{formatEuro(result.verschilNominaal, locale)}</td
-								>
-								<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
-									>{formatEuro(result.verschilReel, locale)}</td
-								>
-							</tr>
-							<tr class="bg-amber-50 dark:bg-amber-900/20">
-								<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
-									>{t.extraCostsMonthly}</td
-								>
-								<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
-									>{formatEuro(result.verschilNominaalPerMaand, locale)}</td
-								>
-								<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
-									>{formatEuro(result.verschilReelPerMaand, locale)}</td
-								>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+				<div class="space-y-6">
+					<h3 class="text-lg font-semibold text-gray-800 dark:text-gray-300">
+						{t.monthlyCostsOverTime}
+					</h3>
 
-				{#if result}
-					<div class="space-y-6 mt-6">
-						<h3 class="text-lg font-semibold text-gray-800 dark:text-gray-300">
-							{t.monthlyCostsOverTime}
-						</h3>
-
-						<div class="space-y-4">
-							<MortgageChart
-								data={result.monthlyData}
-								title={t.nominalAmounts}
-								isReal={false}
-								showLegend={false}
-								showComparison={true}
-								{t}
-								{locale}
-							/>
-							<MortgageChart
-								data={result.monthlyData}
-								title={t.realAmounts}
-								isReal={true}
-								showLegend={false}
-								showComparison={true}
-								{t}
-								{locale}
-							/>
-							<ChartLegend {t} showComparison={true} />
-						</div>
-
+					<div class="space-y-4">
+						<MortgageChart
+							data={result.monthlyData}
+							title={t.nominalAmounts}
+							isReal={false}
+							showLegend={false}
+							showComparison={true}
+							{t}
+							{locale}
+							currency={inputs.currency}
+						/>
+						<MortgageChart
+							data={result.monthlyData}
+							title={t.realAmounts}
+							isReal={true}
+							showLegend={false}
+							showComparison={true}
+							{t}
+							{locale}
+							currency={inputs.currency}
+						/>
+						<ChartLegend {t} showComparison={true} />
 					</div>
-				{/if}
+
+					<div class="overflow-x-auto mt-6">
+						<table
+							class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+						>
+							<thead class="bg-gray-50 dark:bg-gray-700">
+								<tr>
+									<th
+										class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+										>{t.metric}</th
+									>
+									<th
+										class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+										>{t.nominal}</th
+									>
+									<th
+										class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+										>{t.real}</th
+									>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-gray-200">
+								<tr>
+									<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+										>{result.hypotheekType === 'annuiteit'
+											? t.monthlyPayment
+											: t.firstMonthlyPayment}</td
+									>
+									<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
+										>{formatCurrency(result.annuiteit, locale, inputs.currency)}</td
+									>
+									<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
+										>{formatCurrency(result.annuiteitReel, locale, inputs.currency)}</td
+									>
+								</tr>
+								<tr>
+									<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+										>{t.totalPaid}</td
+									>
+									<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
+										>{formatCurrency(result.totaalNominaal, locale, inputs.currency)}</td
+									>
+									<td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100"
+										>{formatCurrency(result.totaalReel, locale, inputs.currency)}</td
+									>
+								</tr>
+								<tr class="bg-amber-50 dark:bg-amber-900/20">
+									<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+										>{t.extraCostsTotal}</td
+									>
+									<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
+										>{formatCurrency(result.verschilNominaal, locale, inputs.currency)}</td
+									>
+									<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
+										>{formatCurrency(result.verschilReel, locale, inputs.currency)}</td
+									>
+								</tr>
+								<tr class="bg-amber-50 dark:bg-amber-900/20">
+									<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+										>{t.extraCostsMonthly}</td
+									>
+									<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
+										>{formatCurrency(result.verschilNominaalPerMaand, locale, inputs.currency)}</td
+									>
+									<td class="px-4 py-3 text-sm text-right text-amber-700 dark:text-amber-400"
+										>{formatCurrency(result.verschilReelPerMaand, locale, inputs.currency)}</td
+									>
+								</tr>
+								{#if inputs.hypotheekType === 'annuiteit'}
+									<tr class="bg-gray-100 dark:bg-gray-600">
+										<td
+											colspan="3"
+											class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider text-center"
+										>
+											{t.comparisonWithLinear}
+										</td>
+									</tr>
+									<tr class="bg-gray-50 dark:bg-gray-800">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.extraCostsTotal} ({t.linear})</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-gray-700 dark:text-gray-300"
+											>{formatCurrency(result.linearExtraCosts, locale, inputs.currency)}</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-gray-700 dark:text-gray-300"
+											>{formatCurrency(result.linearExtraCostsReal, locale, inputs.currency)}</td
+										>
+									</tr>
+									<tr class="bg-gray-50 dark:bg-gray-800">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.extraCostsMonthly} ({t.linear})</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-gray-700 dark:text-gray-300"
+											>{formatCurrency(result.linearExtraCostsMonthly, locale, inputs.currency)}</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-gray-700 dark:text-gray-300"
+											>{formatCurrency(
+												result.linearExtraCostsRealMonthly,
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+									<tr class="bg-purple-50 dark:bg-purple-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.differenceCostComparison}</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-purple-700 dark:text-purple-400"
+											>{formatCurrency(
+												result.linearExtraCosts - result.verschilNominaal,
+												locale,
+												inputs.currency
+											)}</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-purple-700 dark:text-purple-400"
+											>{formatCurrency(
+												result.linearExtraCostsReal - result.verschilReel,
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+									<tr class="bg-purple-50 dark:bg-purple-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.differenceMonthlyComparison}</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-purple-700 dark:text-purple-400"
+											>{formatCurrency(
+												result.linearExtraCostsMonthly - result.verschilNominaalPerMaand,
+												locale,
+												inputs.currency
+											)}</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-purple-700 dark:text-purple-400"
+											>{formatCurrency(
+												result.linearExtraCostsRealMonthly - result.verschilReelPerMaand,
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+									<tr class="bg-gray-100 dark:bg-gray-600">
+										<td
+											colspan="3"
+											class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider text-center"
+										>
+											{t.investmentAccountSimulation}
+										</td>
+									</tr>
+									<tr class="bg-blue-50 dark:bg-blue-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.investmentAccountBalance} ({t.difference})</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-blue-700 dark:text-blue-400"
+											>{formatCurrency(result.savingsBalance, locale, inputs.currency)}</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-blue-700 dark:text-blue-400"
+											>{formatCurrency(result.savingsBalanceReal, locale, inputs.currency)}</td
+										>
+									</tr>
+									<tr class="bg-blue-50 dark:bg-blue-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.difference} {t.netDifferenceMonthly} ({t.investmentAccount})</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-blue-700 dark:text-blue-400"
+											>{formatCurrency(
+												result.savingsBalance / (inputs.looptijdJaren * 12),
+												locale,
+												inputs.currency
+											)}</td
+										>
+										<td class="px-4 py-3 text-sm text-right text-blue-700 dark:text-blue-400"
+											>{formatCurrency(
+												result.savingsBalanceReal / (inputs.looptijdJaren * 12),
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+									<tr class="bg-gray-100 dark:bg-gray-600">
+										<td
+											colspan="3"
+											class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider text-center"
+										>
+											{t.netDifference}
+										</td>
+									</tr>
+									<tr class="bg-green-50 dark:bg-green-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.netDifferenceAnnuity}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-green-700 dark:text-green-400 font-semibold"
+											>{formatCurrency(
+												result.verschilNominaal - result.savingsBalance,
+												locale,
+												inputs.currency
+											)}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-green-700 dark:text-green-400 font-semibold"
+											>{formatCurrency(
+												result.verschilReel - result.savingsBalanceReal,
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+									<tr class="bg-green-50 dark:bg-green-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.netDifferenceMonthly} ({t.annuity})</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-green-700 dark:text-green-400 font-semibold"
+											>{formatCurrency(
+												(result.verschilNominaal - result.savingsBalance) /
+													(inputs.looptijdJaren * 12),
+												locale,
+												inputs.currency
+											)}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-green-700 dark:text-green-400 font-semibold"
+											>{formatCurrency(
+												(result.verschilReel - result.savingsBalanceReal) /
+													(inputs.looptijdJaren * 12),
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+									<tr class="bg-green-50 dark:bg-green-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.netDifferenceLinear}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-green-700 dark:text-green-400 font-semibold"
+											>{formatCurrency(result.linearExtraCosts, locale, inputs.currency)}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-green-700 dark:text-green-400 font-semibold"
+											>{formatCurrency(result.linearExtraCostsReal, locale, inputs.currency)}</td
+										>
+									</tr>
+									<tr class="bg-green-50 dark:bg-green-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.netDifferenceMonthly} ({t.linear})</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-green-700 dark:text-green-400 font-semibold"
+											>{formatCurrency(result.linearExtraCostsMonthly, locale, inputs.currency)}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-green-700 dark:text-green-400 font-semibold"
+											>{formatCurrency(
+												result.linearExtraCostsRealMonthly,
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+									<tr
+										class="bg-purple-50 dark:bg-purple-900/20 border-t-2 border-purple-300 dark:border-purple-700"
+									>
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.finalNetDifference}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-purple-700 dark:text-purple-400 font-bold"
+											>{formatCurrency(
+												result.linearExtraCosts - (result.verschilNominaal - result.savingsBalance),
+												locale,
+												inputs.currency
+											)}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-purple-700 dark:text-purple-400 font-bold"
+											>{formatCurrency(
+												result.linearExtraCostsReal -
+													(result.verschilReel - result.savingsBalanceReal),
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+									<tr class="bg-purple-50 dark:bg-purple-900/20">
+										<td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+											>{t.finalNetDifference} ({t.netDifferenceMonthly})</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-purple-700 dark:text-purple-400 font-bold"
+											>{formatCurrency(
+												(result.linearExtraCosts -
+													(result.verschilNominaal - result.savingsBalance)) /
+													(inputs.looptijdJaren * 12),
+												locale,
+												inputs.currency
+											)}</td
+										>
+										<td
+											class="px-4 py-3 text-sm text-right text-purple-700 dark:text-purple-400 font-bold"
+											>{formatCurrency(
+												(result.linearExtraCostsReal -
+													(result.verschilReel - result.savingsBalanceReal)) /
+													(inputs.looptijdJaren * 12),
+												locale,
+												inputs.currency
+											)}</td
+										>
+									</tr>
+								{/if}
+							</tbody>
+						</table>
+					</div>
+
+					{#if inputs.hypotheekType === 'annuiteit'}
+						<SavingsBalanceChart
+							data={result.monthlyData}
+							{t}
+							{locale}
+							beleggingsRendement={inputs.beleggingsRendement}
+							vermogensheffing={inputs.vermogensheffing}
+							hypotheekType={inputs.hypotheekType}
+							kredietRente={inputs.kredietRente}
+							currency={inputs.currency}
+						/>
+					{/if}
+				</div>
 			{/if}
 		</div>
 	</div>
 
 	{#if result}
-		<MortgageDataTable data={result.monthlyData} {t} {locale} />
-		<SavingsComparisonTable 
-			data={result.monthlyData} 
-			{t} 
-			{locale} 
+		<MortgageDataTable data={result.monthlyData} {t} {locale} currency={inputs.currency} />
+		<SavingsComparisonTable
+			data={result.monthlyData}
+			{t}
+			{locale}
 			beleggingsRendement={inputs.beleggingsRendement}
 			vermogensheffing={inputs.vermogensheffing}
 			hypotheekType={inputs.hypotheekType}
+			kredietRente={inputs.kredietRente}
+			currency={inputs.currency}
 		/>
 	{/if}
 

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { MonthlyData } from '$lib';
-	import { formatEuro, formatPercentage } from '$lib';
+	import { formatCurrency, formatPercentage } from '$lib';
 	import type { Translations } from '$lib/i18n';
 
 	export let data: MonthlyData[];
 	export let t: Translations;
 	export let locale: string;
+	export let currency: string = 'EUR';
 
 	let expandedYears = new Set<number>();
 
@@ -209,24 +210,24 @@
 							</div>
 						</td>
 						<td class="px-4 py-3 text-sm text-right text-blue-600 dark:text-blue-400"
-							>{formatEuro(yearData.totals.aflossing, locale)}</td
+							>{formatCurrency(yearData.totals.aflossing, locale, currency)}</td
 						>
 						<td class="px-4 py-3 text-sm text-right text-red-600 dark:text-red-400"
-							>{formatEuro(yearData.totals.renteNetto, locale)}</td
+							>{formatCurrency(yearData.totals.renteNetto, locale, currency)}</td
 						>
 						<td
 							class="px-4 py-3 text-sm text-right text-green-600 dark:text-green-400 border-r border-gray-200 dark:border-gray-600"
-							>{formatEuro(yearData.totals.hraVoordeel, locale)}</td
+							>{formatCurrency(yearData.totals.hraVoordeel, locale, currency)}</td
 						>
 						<td class="px-4 py-3 text-sm text-right text-blue-600 dark:text-blue-400"
-							>{formatEuro(yearData.totals.aflossing_reel, locale)}</td
+							>{formatCurrency(yearData.totals.aflossing_reel, locale, currency)}</td
 						>
 						<td class="px-4 py-3 text-sm text-right text-red-600 dark:text-red-400"
-							>{formatEuro(yearData.totals.renteNetto_reel, locale)}</td
+							>{formatCurrency(yearData.totals.renteNetto_reel, locale, currency)}</td
 						>
 						<td
 							class="px-4 py-3 text-sm text-right text-green-600 dark:text-green-400 border-r border-gray-200 dark:border-gray-600"
-							>{formatEuro(yearData.totals.hraVoordeel_reel, locale)}</td
+							>{formatCurrency(yearData.totals.hraVoordeel_reel, locale, currency)}</td
 						>
 						<td class="px-2 py-3 text-sm text-right text-gray-600 dark:text-gray-400"
 							>{formatPercentage(yearData.totals.avgCumulatieveInflatie)}</td
@@ -241,24 +242,24 @@
 									{getMonthName(monthData.maand)} ({monthData.maand})
 								</td>
 								<td class="px-4 py-2 text-xs text-right text-blue-600 dark:text-blue-400"
-									>{formatEuro(monthData.aflossing, locale)}</td
+									>{formatCurrency(monthData.aflossing, locale, currency)}</td
 								>
 								<td class="px-4 py-2 text-xs text-right text-red-600 dark:text-red-400"
-									>{formatEuro(monthData.renteNetto, locale)}</td
+									>{formatCurrency(monthData.renteNetto, locale, currency)}</td
 								>
 								<td
 									class="px-4 py-2 text-xs text-right text-green-600 dark:text-green-400 border-r border-gray-200 dark:border-gray-600"
-									>{formatEuro(monthData.hraVoordeel, locale)}</td
+									>{formatCurrency(monthData.hraVoordeel, locale, currency)}</td
 								>
 								<td class="px-4 py-2 text-xs text-right text-blue-600 dark:text-blue-400"
-									>{formatEuro(monthData.aflossing_reel, locale)}</td
+									>{formatCurrency(monthData.aflossing_reel, locale, currency)}</td
 								>
 								<td class="px-4 py-2 text-xs text-right text-red-600 dark:text-red-400"
-									>{formatEuro(monthData.renteNetto_reel, locale)}</td
+									>{formatCurrency(monthData.renteNetto_reel, locale, currency)}</td
 								>
 								<td
 									class="px-4 py-2 text-xs text-right text-green-600 dark:text-green-400 border-r border-gray-200 dark:border-gray-600"
-									>{formatEuro(monthData.hraVoordeel_reel, locale)}</td
+									>{formatCurrency(monthData.hraVoordeel_reel, locale, currency)}</td
 								>
 								<td class="px-2 py-2 text-xs text-right text-gray-600 dark:text-gray-400"
 									>{formatPercentage(monthData.cumulatieveInflatie)}</td

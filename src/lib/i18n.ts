@@ -40,6 +40,29 @@ export interface Translations {
 	annuity: string;
 	linear: string;
 	firstMonthlyPayment: string;
+	investmentAccount: string;
+	investmentAccountComparison: string;
+	investmentAccountBalance: string;
+	investmentAccountBalanceOverTime: string;
+	investmentReturn: string;
+	wealthTax: string;
+	creditInterest: string;
+	difference: string;
+	return: string;
+	tax: string;
+	balance: string;
+	comparisonWithLinear: string;
+	investmentAccountSimulation: string;
+	netDifference: string;
+	netDifferenceTotal: string;
+	netDifferenceMonthly: string;
+	netDifferenceAnnuity: string;
+	netDifferenceLinear: string;
+	finalNetDifference: string;
+	currency: string;
+	comparison: string;
+	differenceCostComparison: string;
+	differenceMonthlyComparison: string;
 }
 
 export const dutch: Translations = {
@@ -74,7 +97,7 @@ export const dutch: Translations = {
 	hraBenefit: 'HRA voordeel',
 	cumulativeInflation: 'Cumulatieve inflatie',
 	disclaimer:
-		'DISCLAIMER: Dit is geen financieel advies. Deze berekening is uitsluitend bedoeld voor educatieve en informatieve doeleinden. De resultaten zijn hypothetisch en de nauwkeurigheid wordt niet gegarandeerd. Raadpleeg altijd een financieel adviseur of hypotheekspecialist voor persoonlijk advies. De maker neemt geen verantwoordelijkheid voor beslissingen gebaseerd op deze tool.',
+		'DISCLAIMER: Dit is geen financieel advies. Deze berekening is uitsluitend bedoeld voor educatieve en informatieve doeleinden. De resultaten zijn hypothetisch en de nauwkeurigheid wordt niet gegarandeerd. Raadpleeg altijd een financieel adviseur of hypotheekspecialist voor persoonlijk advies. De maker neemt geen verantwoordelijkheid voor beslissingen gebaseerd op deze tool. Deze calculator is 100% vibe coded - een klein meesterwerk!',
 	hraYearsLabel: 'HRA jaren',
 	hraReductionPeriodLabel: 'HRA afbouw periode (jaren)',
 	taxRateLabel: 'HRA percentage (%)',
@@ -84,7 +107,30 @@ export const dutch: Translations = {
 	mortgageType: 'Hypotheektype',
 	annuity: 'Annuïteit',
 	linear: 'Lineair',
-	firstMonthlyPayment: 'Eerste maandlast'
+	firstMonthlyPayment: 'Eerste maandlast',
+	investmentAccount: 'Beleggingsrekening',
+	investmentAccountComparison: 'Beleggingsrekening vergelijking',
+	investmentAccountBalance: 'Beleggingsrekening saldo',
+	investmentAccountBalanceOverTime: 'Beleggingsrekening saldoverloop',
+	investmentReturn: 'Beleggingsrendement (%)',
+	wealthTax: 'Vermogensheffing (%)',
+	creditInterest: 'Kredietrente (%)',
+	difference: 'Verschil',
+	return: 'Rendement',
+	tax: 'Belasting',
+	balance: 'Saldo',
+	comparisonWithLinear: 'Vergelijking met lineaire hypotheek',
+	investmentAccountSimulation: 'Beleggingsrekening simulatie',
+	netDifference: 'Netto verschil (extra kosten minus beleggingsrekening voordeel)',
+	netDifferenceTotal: 'Netto verschil totaal',
+	netDifferenceMonthly: 'Netto verschil per maand',
+	netDifferenceAnnuity: 'Netto verschil totaal (annuiteit)',
+	netDifferenceLinear: 'Netto verschil totaal (lineair)',
+	finalNetDifference: 'Verschil netto totaal (lineair - annuiteit)',
+	currency: 'Valuta',
+	comparison: 'Vergelijking',
+	differenceCostComparison: 'Verschil extra kosten (lineair - annuiteit)',
+	differenceMonthlyComparison: 'Verschil per maand (lineair - annuiteit)'
 };
 
 export const english: Translations = {
@@ -119,7 +165,7 @@ export const english: Translations = {
 	hraBenefit: 'MID benefit',
 	cumulativeInflation: 'Cumulative inflation',
 	disclaimer:
-		'DISCLAIMER: This is not financial advice. This calculation is intended solely for educational and informational purposes. The results are hypothetical and accuracy is not guaranteed. Always consult a financial advisor or mortgage specialist for personal advice. The creator takes no responsibility for decisions based on this tool.',
+		'DISCLAIMER: This is not financial advice. This calculation is intended solely for educational and informational purposes. The results are hypothetical and accuracy is not guaranteed. Always consult a financial advisor or mortgage specialist for personal advice. The creator takes no responsibility for decisions based on this tool. This calculator is 100% vibe coded - a small masterpiece!',
 	hraYearsLabel: 'MID years',
 	hraReductionPeriodLabel: 'MID reduction period (years)',
 	taxRateLabel: 'MID percentage (%)',
@@ -129,5 +175,28 @@ export const english: Translations = {
 	mortgageType: 'Mortgage type',
 	annuity: 'Annuity',
 	linear: 'Linear',
-	firstMonthlyPayment: 'First monthly payment'
+	firstMonthlyPayment: 'First monthly payment',
+	investmentAccount: 'Investment account',
+	investmentAccountComparison: 'Investment account comparison',
+	investmentAccountBalance: 'Investment account balance',
+	investmentAccountBalanceOverTime: 'Investment account balance over time',
+	investmentReturn: 'Investment return (%)',
+	wealthTax: 'Wealth tax (%)',
+	creditInterest: 'Credit interest (%)',
+	difference: 'Difference',
+	return: 'Return',
+	tax: 'Tax',
+	balance: 'Balance',
+	comparisonWithLinear: 'Comparison with linear mortgage',
+	investmentAccountSimulation: 'Investment account simulation',
+	netDifference: 'Net difference (extra costs minus investment account benefit)',
+	netDifferenceTotal: 'Net difference total',
+	netDifferenceMonthly: 'Net difference monthly',
+	netDifferenceAnnuity: 'Net difference total (annuity)',
+	netDifferenceLinear: 'Net difference total (linear)',
+	finalNetDifference: 'Final net difference (linear - annuity)',
+	currency: 'Currency',
+	comparison: 'Comparison',
+	differenceCostComparison: 'Cost difference (linear - annuity)',
+	differenceMonthlyComparison: 'Monthly difference (linear - annuity)'
 };

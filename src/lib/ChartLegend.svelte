@@ -21,7 +21,7 @@
 	{#if showComparison}
 		<div class="flex items-center space-x-2">
 			<div class="w-4 h-1 bg-purple-600"></div>
-			<span class="text-sm text-gray-700 dark:text-gray-300">Vergelijking</span>
+			<span class="text-sm text-gray-700 dark:text-gray-300">{t.comparison}</span>
 		</div>
 	{/if}
 </div>
